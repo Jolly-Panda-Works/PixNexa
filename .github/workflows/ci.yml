@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-powershell:
+    name: PSScriptAnalyzer
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser -SkipPublisherCheck
+
+      - name: Run PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          $results = Invoke-ScriptAnalyzer -Path .\convert-image.ps1 -Severity Warning,Error
+          $results | Format-Table -AutoSize
+          if ($results | Where-Object { $_.Severity -eq 'Error' }) {
+            Write-Error "PSScriptAnalyzer found errors."
+            exit 1
+          }
+
+  syntax-check-cmd:
+    name: Batch file basic syntax check
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate .cmd file is well-formed (no execution)
+        shell: cmd
+        run: |
+          findstr /r /c:"^:menu" convert-image.cmd >nul || (echo Missing :menu label && exit /b 1)
+          findstr /r /c:"^:end" convert-image.cmd >nul || (echo Missing :end label && exit /b 1)
+          echo convert-image.cmd looks structurally valid.

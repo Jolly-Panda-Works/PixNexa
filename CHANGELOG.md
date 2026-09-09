@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Open-source project scaffolding: `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`.
+- GitHub issue templates (bug report, feature request) and a pull request template.
+- CI workflow (`.github/workflows/ci.yml`) that lints `convert-image.ps1` with PSScriptAnalyzer and sanity-checks `convert-image.cmd` on every push/PR.
+
 ## [1.1.0] - 2026-08-16
 
 ### Changed

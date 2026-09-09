@@ -3,6 +3,7 @@
 [![Version](https://img.shields.io/github/v/release/UsefFarahmand/image-format-converter?label=version)](https://github.com/UsefFarahmand/image-format-converter/releases/latest)
 [![Release](https://img.shields.io/github/v/tag/UsefFarahmand/image-format-converter?label=release)](https://github.com/UsefFarahmand/image-format-converter/releases)
 [![License](https://img.shields.io/github/license/UsefFarahmand/image-format-converter)](https://github.com/Usef-Farahmand/image-format-converter/blob/main/LICENSE)
+[![CI](https://github.com/UsefFarahmand/image-format-converter/actions/workflows/ci.yml/badge.svg)](https://github.com/UsefFarahmand/image-format-converter/actions/workflows/ci.yml)
 
 A simple Windows `.cmd` script that converts an image from one format to another — **no third-party software required**. It uses PowerShell and the built-in .NET `System.Drawing` library, both of which ship with Windows.
 
@@ -92,6 +93,17 @@ Download the latest release from the [Releases page](https://github.com/UsefFara
 
 **Usef Farahmand**
 GitHub: [https://github.com/UsefFarahmand](https://github.com/UsefFarahmand)
+
+## Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for
+development setup, code style, and how to submit a pull request. This
+project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md).
+
+## Security
+
+Found a security issue? Please see [SECURITY.md](SECURITY.md) for how to
+report it responsibly instead of opening a public issue.
 
 ## License
 
