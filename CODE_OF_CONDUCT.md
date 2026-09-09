@@ -48,9 +48,9 @@ representing the project in public spaces.
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the project maintainer by opening a private
-[GitHub Security Advisory](https://github.com/UsefFarahmand/image-format-converter/security/advisories/new)
+[GitHub Security Advisory](https://github.com/Usef-Farahmand/image-format-converter/security/advisories/new)
 or by contacting the maintainer directly through their GitHub profile
-([@UsefFarahmand](https://github.com/UsefFarahmand)). All complaints will be
+([@Usef-Farahmand](https://github.com/Usef-Farahmand)). All complaints will be
 reviewed and investigated promptly and fairly.
 
 ## Attribution

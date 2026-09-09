@@ -2,7 +2,7 @@
 # Image Format Converter
 # Version: 1.1.0
 # Author: Usef Farahmand
-# GitHub: https://github.com/UsefFarahmand
+# GitHub: https://github.com/Usef-Farahmand
 # ============================================
 param(
     [Parameter(Mandatory=$true)][string]$SourcePath,

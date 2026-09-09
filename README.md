@@ -1,9 +1,9 @@
 # Image Format Converter (CMD Script)
 
-[![Version](https://img.shields.io/github/v/release/UsefFarahmand/image-format-converter?label=version)](https://github.com/UsefFarahmand/image-format-converter/releases/latest)
-[![Release](https://img.shields.io/github/v/tag/UsefFarahmand/image-format-converter?label=release)](https://github.com/UsefFarahmand/image-format-converter/releases)
-[![License](https://img.shields.io/github/license/UsefFarahmand/image-format-converter)](https://github.com/Usef-Farahmand/image-format-converter/blob/main/LICENSE)
-[![CI](https://github.com/UsefFarahmand/image-format-converter/actions/workflows/ci.yml/badge.svg)](https://github.com/UsefFarahmand/image-format-converter/actions/workflows/ci.yml)
+[![Version](https://img.shields.io/github/v/release/Usef-Farahmand/image-format-converter?label=version)](https://github.com/Usef-Farahmand/image-format-converter/releases/latest)
+[![Release](https://img.shields.io/github/v/tag/Usef-Farahmand/image-format-converter?label=release)](https://github.com/Usef-Farahmand/image-format-converter/releases)
+[![License](https://img.shields.io/github/license/Usef-Farahmand/image-format-converter)](https://github.com/Usef-Farahmand/image-format-converter/blob/main/LICENSE)
+[![CI](https://github.com/Usef-Farahmand/image-format-converter/actions/workflows/ci.yml/badge.svg)](https://github.com/Usef-Farahmand/image-format-converter/actions/workflows/ci.yml)
 
 A simple Windows `.cmd` script that converts an image from one format to another — **no third-party software required**. It uses PowerShell and the built-in .NET `System.Drawing` library, both of which ship with Windows.
 
@@ -87,12 +87,12 @@ Earlier versions of this script used .NET's `Bitmap.GetHicon()`, which has a kno
 
 Current version: **1.1.0** (see [CHANGELOG.md](CHANGELOG.md) for release history)
 
-Download the latest release from the [Releases page](https://github.com/UsefFarahmand/image-format-converter/releases/latest).
+Download the latest release from the [Releases page](https://github.com/Usef-Farahmand/image-format-converter/releases/latest).
 
 ## Author
 
 **Usef Farahmand**
-GitHub: [https://github.com/UsefFarahmand](https://github.com/UsefFarahmand)
+GitHub: [https://github.com/Usef-Farahmand](https://github.com/Usef-Farahmand)
 
 ## Contributing
 

@@ -6,8 +6,8 @@ low and PRs are very welcome.
 
 ## Ways to contribute
 
-- **Report a bug** — open an [issue](https://github.com/UsefFarahmand/image-format-converter/issues/new?template=bug_report.md).
-- **Suggest a feature** — open a [feature request](https://github.com/UsefFarahmand/image-format-converter/issues/new?template=feature_request.md).
+- **Report a bug** — open an [issue](https://github.com/Usef-Farahmand/image-format-converter/issues/new?template=bug_report.md).
+- **Suggest a feature** — open a [feature request](https://github.com/Usef-Farahmand/image-format-converter/issues/new?template=feature_request.md).
 - **Improve the docs** — README fixes, clearer troubleshooting steps, etc. are
   always appreciated.
 - **Submit code** — bug fixes, new output formats, or quality-of-life

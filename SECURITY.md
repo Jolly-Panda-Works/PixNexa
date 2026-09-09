@@ -17,10 +17,10 @@ small. That said, if you find a security issue (for example, unsafe handling
 of file paths, or a way the script could be tricked into executing unintended
 code), please report it privately rather than opening a public issue:
 
-1. Open a [GitHub Security Advisory](https://github.com/UsefFarahmand/image-format-converter/security/advisories/new)
+1. Open a [GitHub Security Advisory](https://github.com/Usef-Farahmand/image-format-converter/security/advisories/new)
    for this repository, **or**
 2. Contact the maintainer directly through their GitHub profile
-   ([@UsefFarahmand](https://github.com/UsefFarahmand)).
+   ([@Usef-Farahmand](https://github.com/Usef-Farahmand)).
 
 Please include:
 - A description of the issue and its potential impact
