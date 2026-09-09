@@ -39,7 +39,7 @@ A simple Windows `.cmd` script that converts an image from one format to another
 1. Download both `convert-image.cmd` and `convert-image.ps1` and keep them in the same folder.
 2. Double-click `convert-image.cmd` to run it.
 3. Enter the path to your image (or drag and drop the image file into the console window and press Enter).
-4. Enter the desired output format (e.g. `png`).
+4. Choose the desired output format from the numbered menu (e.g. press `2` for `png`).
 5. The converted file is created in the same folder as the original, and that folder opens automatically with the new file selected.
 6. Press `C` to convert another image, or `X` to exit.
 
@@ -55,7 +55,16 @@ Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 
 ```
 Enter the image file path: C:\Users\me\Pictures\photo.jpg
-Enter the target format: png
+
+Select the target format:
+  [1] jpg
+  [2] png
+  [3] bmp
+  [4] gif
+  [5] tiff
+  [6] ico
+
+Enter your choice (1-6): 2
 
 Converting...
 Conversion completed successfully.
@@ -75,7 +84,7 @@ Earlier versions of this script used .NET's `Bitmap.GetHicon()`, which has a kno
 
 ## Version
 
-Current version: **1.0.0** (see [CHANGELOG.md](CHANGELOG.md) for release history)
+Current version: **1.1.0** (see [CHANGELOG.md](CHANGELOG.md) for release history)
 
 Download the latest release from the [Releases page](https://github.com/UsefFarahmand/image-format-converter/releases/latest).
 

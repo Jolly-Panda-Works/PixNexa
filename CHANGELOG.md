@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-08-16
+
+### Changed
+- The `.cmd` script now lets you pick the target format from a numbered menu (`[1] jpg` ... `[6] ico`) using `choice`, instead of typing the format name.
+
 ## [1.0.0] - 2026-08-16
 
 ### Added
@@ -17,5 +22,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README with usage instructions, supported/unsupported formats, troubleshooting, and requirements.
 - MIT License.
 
-[Unreleased]: https://github.com/UsefFarahmand/image-format-converter/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/UsefFarahmand/image-format-converter/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/UsefFarahmand/image-format-converter/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/UsefFarahmand/image-format-converter/releases/tag/v1.0.0

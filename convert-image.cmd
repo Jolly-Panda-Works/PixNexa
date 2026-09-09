@@ -1,14 +1,14 @@
 @echo off
 :: ============================================
 :: Image Format Converter
-:: Version: 1.0.0
+:: Version: 1.1.0
 :: Author: Usef Farahmand
 :: GitHub: https://github.com/UsefFarahmand
 :: ============================================
 setlocal enabledelayedexpansion
 
 set "scriptdir=%~dp0"
-set "appversion=1.0.0"
+set "appversion=1.1.0"
 
 :menu
 echo ============================================
@@ -29,11 +29,26 @@ if not exist "%srcfile%" (
     goto ask_continue
 )
 
-:: Get the target format from the user
+:: Get the target format from the user (menu selection instead of free typing)
 echo.
-echo Supported formats: jpg , png , bmp , gif , tiff , ico
+echo Select the target format:
+echo   [1] jpg
+echo   [2] png
+echo   [3] bmp
+echo   [4] gif
+echo   [5] tiff
+echo   [6] ico
+echo.
 echo (Note: svg is NOT supported - it is a vector format and requires a dedicated tool such as Inkscape)
-set /p "targetfmt=Enter the target format: "
+echo.
+choice /c 123456 /n /m "Enter your choice (1-6): "
+
+if errorlevel 6 set "targetfmt=ico"
+if errorlevel 5 if not errorlevel 6 set "targetfmt=tiff"
+if errorlevel 4 if not errorlevel 5 set "targetfmt=gif"
+if errorlevel 3 if not errorlevel 4 set "targetfmt=bmp"
+if errorlevel 2 if not errorlevel 3 set "targetfmt=png"
+if errorlevel 1 if not errorlevel 2 set "targetfmt=jpg"
 
 :: Extract the folder and filename without extension
 for %%F in ("%srcfile%") do (
