@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/github/v/release/UsefFarahmand/image-format-converter?label=version)](https://github.com/UsefFarahmand/image-format-converter/releases/latest)
 [![Release](https://img.shields.io/github/v/tag/UsefFarahmand/image-format-converter?label=release)](https://github.com/UsefFarahmand/image-format-converter/releases)
-[![License](https://img.shields.io/github/license/UsefFarahmand/image-format-converter)](LICENSE)
+[![License](https://img.shields.io/github/license/UsefFarahmand/image-format-converter)](https://github.com/Usef-Farahmand/image-format-converter/blob/main/LICENSE)
 
 A simple Windows `.cmd` script that converts an image from one format to another — **no third-party software required**. It uses PowerShell and the built-in .NET `System.Drawing` library, both of which ship with Windows.
 
@@ -86,4 +86,4 @@ GitHub: [https://github.com/UsefFarahmand](https://github.com/UsefFarahmand)
 
 ## License
 
-MIT — feel free to use, modify, and share.
+[MIT](https://github.com/Usef-Farahmand/image-format-converter/blob/main/LICENSE) — feel free to use, modify, and share.
