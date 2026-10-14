@@ -127,10 +127,13 @@ python -m pytest
 
 | Trigger | Result |
 | ------- | ------ |
-| Pull request, or push to `develop` | Build + tests. Files are kept as **Artifacts** of the run for 14 days (Actions → the run → Artifacts). |
-| Push to `main` | Same, and a public **GitHub Release** `vMAJOR.MINOR.<build number>` with `ImageFormatConverter_Setup.exe`, `ImageFormatConverter_Portable.zip` and `SHA256SUMS.txt`. |
+| Pull request | Build + tests. Files are kept as **Artifacts** of the run for 14 days (Actions → the run → Artifacts). No tag, no release. |
+| Push to `develop` | Same, plus a git tag `vMAJOR.MINOR.0-dev.<build number>`. No release. |
+| Push to `main` | Same, plus a git tag and a public **GitHub Release** `vMAJOR.MINOR.<build number>` with `ImageFormatConverter_Setup.exe`, `ImageFormatConverter_Portable.zip` and `SHA256SUMS.txt`. |
 | Push of a tag `vX.Y.Z` | A release named exactly after the tag. |
 | *Run workflow* button | Same as a push to the selected branch. |
+
+Every build of a branch therefore gets its own git tag with its version number.
 
 Pushes that only change docs (`*.md`, `docs/`, issue templates ...) do not start a build. To start a new release line, change the number in the [`VERSION`](VERSION) file (for example `2.1.0`). The same version string is shown in the app, in the file properties of the exe, in the installer and in the release name.
 

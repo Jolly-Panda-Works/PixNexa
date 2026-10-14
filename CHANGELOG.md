@@ -20,7 +20,7 @@ Image Format Converter is now a real Windows desktop app, built and released by 
 - Choice of output folder, and a switch for replacing files with the same name (default: never overwrite, use `name (1).ext`).
 - EXIF orientation is applied; transparency is painted on white for JPG and BMP.
 - Settings dialog with About information; options are remembered in `%APPDATA%\ImageFormatConverter`.
-- GitHub Actions: `build.yml` builds the exe, the installer (`ImageFormatConverter_Setup.exe`) and a portable zip, creates `SHA256SUMS.txt` and publishes releases; `ci.yml` lints and tests.
+- GitHub Actions: `build.yml` tags every branch build with its version, builds the exe, the installer (`ImageFormatConverter_Setup.exe`) and a portable zip, creates `SHA256SUMS.txt` and publishes releases; `ci.yml` lints and tests.
 - Inno Setup installer script, `build_exe.bat`, `run_gui.bat`, `tools/set_version.py` (one version everywhere), Dependabot config.
 - Test suite (engine, version tool, window smoke test), `CODE_SIGNING.md`, `PRIVACY.md`.
 

@@ -104,6 +104,22 @@ jobs:
           path: SHA256SUMS.txt
           retention-days: 14
 
+      # Every build of a branch (main, develop or a manual run) gets a git tag with its version,
+      # e.g. v2.0.37 or v2.0.0-dev.12. Pull requests and builds triggered by a tag are not tagged again.
+      - name: Tag this build
+        if: github.event_name != 'pull_request' && startsWith(github.ref, 'refs/heads/')
+        shell: bash
+        run: |
+          tag="v${{ steps.ver.outputs.version }}"
+          if git ls-remote --exit-code --tags origin "refs/tags/$tag" >/dev/null 2>&1; then
+            echo "Tag $tag already exists, skipping"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git tag -a "$tag" -m "Image Format Converter $tag" "$GITHUB_SHA"
+            git push origin "$tag"
+          fi
+
       # Public GitHub Releases are published only from main and from version tags.
       - name: Publish GitHub Release
         if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
