@@ -7,10 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-10-14
+
+Image Format Converter is now a real Windows desktop app, built and released by GitHub Actions.
+
 ### Added
-- Open-source project scaffolding: `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`.
-- GitHub issue templates (bug report, feature request) and a pull request template.
-- CI workflow (`.github/workflows/ci.yml`) that lints `convert-image.ps1` with PSScriptAnalyzer and sanity-checks `convert-image.cmd` on every push/PR.
+- Desktop app with a dark-and-orange interface (same theme as SnapshotAll): `image_converter_gui.py`.
+- Batch conversion: add files, add a folder, or drag and drop.
+- WEBP output, and a quality slider for JPG and WEBP.
+- Animated GIF ⇄ WEBP conversion that keeps all frames.
+- Choice of output folder, and a switch for replacing files with the same name (default: never overwrite, use `name (1).ext`).
+- EXIF orientation is applied; transparency is painted on white for JPG and BMP.
+- Settings dialog with About information; options are remembered in `%APPDATA%\ImageFormatConverter`.
+- GitHub Actions: `build.yml` builds the exe, the installer (`ImageFormatConverter_Setup.exe`) and a portable zip, creates `SHA256SUMS.txt` and publishes releases; `ci.yml` lints and tests.
+- Inno Setup installer script, `build_exe.bat`, `run_gui.bat`, `tools/set_version.py` (one version everywhere), Dependabot config.
+- Test suite (engine, version tool, window smoke test), `CODE_SIGNING.md`, `PRIVACY.md`.
+
+### Changed
+- The conversion engine moved from PowerShell/`System.Drawing` to Pillow (`converter_core.py`). The ICO builder still writes PNG-compressed 16/32/48/256 px icons.
+- Documentation, issue templates and the pull request template were rewritten for the new app.
+
+### Removed
+- `convert-image.cmd` and `convert-image.ps1`. They remain available in the tags `v1.0.0` and `v1.1.0`.
 
 ## [1.1.0] - 2026-08-16
 
@@ -27,6 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README with usage instructions, supported/unsupported formats, troubleshooting, and requirements.
 - MIT License.
 
-[Unreleased]: https://github.com/Usef-Farahmand/image-format-converter/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/Usef-Farahmand/image-format-converter/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/Usef-Farahmand/image-format-converter/compare/v1.1.0...v2.0.0
 [1.1.0]: https://github.com/Usef-Farahmand/image-format-converter/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/Usef-Farahmand/image-format-converter/releases/tag/v1.0.0

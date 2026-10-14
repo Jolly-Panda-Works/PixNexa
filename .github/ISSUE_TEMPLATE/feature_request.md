@@ -12,7 +12,7 @@ A clear description of the problem or limitation you're running into.
 
 ## Proposed solution
 
-What you'd like to see added or changed (e.g. "support converting to webp").
+What you'd like to see added or changed (e.g. "support converting to AVIF").
 
 ## Alternatives considered
 
@@ -20,4 +20,4 @@ Any alternative solutions, workarounds, or existing tools you've tried.
 
 ## Additional context
 
-Anything else relevant — links, examples, screenshots, etc.
+Anything else relevant: links, examples, screenshots, etc.

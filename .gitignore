@@ -1,17 +1,22 @@
-# OS files
+.venv/
+.venv-build/
+build/
+dist/
+Output/
+__pycache__/
+*.pyc
+*.spec
+.pytest_cache/
+.ruff_cache/
+_build_version.py
+version_info.txt
+SHA256SUMS.txt
+ImageFormatConverter_Portable.zip
+
+# OS / editor
 Thumbs.db
 Desktop.ini
 .DS_Store
-
-# Editor/IDE
 .vscode/
 .idea/
 *.swp
-
-# PowerShell
-*.ps1xml.bak
-
-# Local test output
-/test-output/
-*.log
-*.zip

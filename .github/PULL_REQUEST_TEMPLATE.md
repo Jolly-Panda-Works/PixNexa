@@ -11,11 +11,11 @@
 
 ## Checklist
 
-- [ ] I tested this manually on Windows by running `convert-image.cmd`
+- [ ] `ruff check .` and `python -m pytest` pass locally
+- [ ] I added or updated tests for the change
+- [ ] I tested the window manually (or the change does not touch the GUI)
 - [ ] I updated `README.md` if user-facing behavior changed
 - [ ] I added an entry under `[Unreleased]` in `CHANGELOG.md`
-- [ ] I kept `.cmd`/`.ps1` line endings as CRLF
-- [ ] PSScriptAnalyzer (CI) passes on `convert-image.ps1`
 
 ## How was this tested?
 
