@@ -18,7 +18,7 @@ from tkinter import filedialog
 import customtkinter as ctk
 import PIL._tkinter_finder  # noqa: F401  (CustomTkinter imports Pillow's Tk support lazily, so PyInstaller
 import PIL.ImageTk  # noqa: F401              would miss it unless it is imported here)
-from PIL import Image
+from PIL import Image, ImageOps
 
 import converter_core as core
 from app_common import APP_AUTHOR, APP_LICENSE, APP_NAME, APP_REPO, APP_SLUG, APP_URL, APP_VERSION, APP_WEBSITE
@@ -96,6 +96,27 @@ def human_size(n):
 
 def shorten(text, limit):
     return text if len(text) <= limit else text[: limit - 1] + "…"
+
+
+THUMB = 56
+_THUMB_BG = (31, 24, 19, 255)
+
+
+def make_thumbnail(path):
+    """A small square preview of an image (a dark placeholder tile if it cannot be drawn)."""
+    tile = Image.new("RGBA", (THUMB, THUMB), _THUMB_BG)
+    try:
+        with Image.open(path) as im:
+            if im.format == "JPEG":
+                im.draft("RGB", (THUMB * 2, THUMB * 2))      # decode a reduced size: much faster for big photos
+            im.thumbnail((THUMB * 2, THUMB * 2))
+            im = ImageOps.exif_transpose(im) or im
+            small = im.convert("RGBA")
+        small.thumbnail((THUMB, THUMB), Image.LANCZOS)
+        tile.alpha_composite(small, ((THUMB - small.width) // 2, (THUMB - small.height) // 2))
+    except Exception:
+        pass
+    return ctk.CTkImage(light_image=tile, dark_image=tile, size=(THUMB, THUMB))
 
 
 def set_windows_app_id():
@@ -670,20 +691,26 @@ class App(ctk.CTk, _DnDBase):
     def _add_row(self, path, info):
         row = ctk.CTkFrame(self.list_frame, fg_color=FIELD, corner_radius=10)
         row.grid(row=len(self.items), column=0, sticky="ew", padx=4, pady=3)
-        row.grid_columnconfigure(0, weight=1)
+        row.grid_columnconfigure(1, weight=1)
+        thumb = make_thumbnail(path)
+        ctk.CTkLabel(row, image=thumb, text="").grid(row=0, column=0, rowspan=2, padx=(10, 4), pady=10)
         text = ctk.CTkFrame(row, fg_color="transparent")
-        text.grid(row=0, column=0, sticky="w", padx=(14, 8), pady=8)
-        ctk.CTkLabel(text, text=shorten(path.name, 44), font=self.f_bold, text_color=FG, anchor="w").pack(anchor="w")
+        text.grid(row=0, column=1, sticky="w", padx=(8, 8), pady=(10, 0))
+        ctk.CTkLabel(text, text=shorten(path.name, 40), font=self.f_bold, text_color=FG, anchor="w").pack(anchor="w")
         ctk.CTkLabel(text, text=f"{info.format} · {info.width} × {info.height} · {human_size(info.size_bytes)}",
                      font=self.f_small, text_color=MUTED, anchor="w").pack(anchor="w")
         status = ctk.CTkLabel(row, text="Ready", font=self.f_small, text_color=MUTED, anchor="e")
-        status.grid(row=0, column=1, padx=(8, 4))
-        item = {"path": path, "info": info, "row": row, "status": status}
+        status.grid(row=0, column=2, padx=(8, 4), pady=(10, 0))
+        item = {"path": path, "info": info, "row": row, "status": status, "thumb": thumb}
         remove = ctk.CTkButton(row, text="✕", width=30, height=30, corner_radius=8, fg_color="transparent",
                                hover_color=PANEL_H, text_color=MUTED, font=self.f_body,
                                command=lambda it=item: self.remove_item(it))
-        remove.grid(row=0, column=2, padx=(0, 8))
+        remove.grid(row=0, column=3, padx=(0, 8), pady=(8, 0))
         item["remove"] = remove
+        bar = ctk.CTkProgressBar(row, height=6, corner_radius=3, fg_color=PANEL, progress_color=ORANGE)
+        bar.set(0)
+        bar.grid(row=1, column=1, columnspan=3, sticky="ew", padx=(8, 12), pady=(6, 12))
+        item["bar"] = bar
         self.items.append(item)
 
     def remove_item(self, item):
@@ -708,7 +735,27 @@ class App(ctk.CTk, _DnDBase):
     def _reset_statuses(self):
         for it in self.items:
             it["status"].configure(text="Ready", text_color=MUTED)
+            self._row_bar(it, "idle")
         self.bar.set(0)
+
+    def _row_bar(self, item, state):
+        """Per-image progress bar: idle (empty) / running (animated) / ok (full) / error (full, red)."""
+        bar = item["bar"]
+        bar.stop()
+        color = DANGER if state == "error" else (PANEL if state == "idle" else ORANGE)   # idle: no stray dot
+        bar.configure(mode="determinate", progress_color=color)
+        if state == "running":
+            bar.configure(mode="indeterminate")
+            bar.start()
+        else:
+            bar.set(1 if state in ("ok", "error") else 0)
+
+    def _scroll_to(self, index):
+        """Keep the image that is being converted in view."""
+        try:
+            self.list_frame._parent_canvas.yview_moveto(max(0, index - 1) / max(1, len(self.items)))
+        except Exception:
+            pass
 
     def _refresh_list(self):
         n = len(self.items)
@@ -772,6 +819,7 @@ class App(ctk.CTk, _DnDBase):
         for i, src in enumerate(job["files"]):
             if self.stop_event.is_set():
                 break
+            self.q.put(("start", i, total))
             try:
                 dst = core.convert_image(src, job["fmt"], job["out_dir"], quality=job["quality"],
                                          overwrite=job["overwrite"])
@@ -790,13 +838,21 @@ class App(ctk.CTk, _DnDBase):
             while True:
                 msg = self.q.get_nowait()
                 kind = msg[0]
-                if kind == "ok":
+                if kind == "start":
+                    _, i, total = msg
+                    self.items[i]["status"].configure(text="Converting…", text_color=ORANGE_H)
+                    self._row_bar(self.items[i], "running")
+                    self._scroll_to(i)
+                    self._set_status(f"Converting {i + 1} of {total}…", MUTED)
+                elif kind == "ok":
                     _, i, total, dst = msg
+                    self._row_bar(self.items[i], "ok")
                     self.last_outputs.append(Path(dst))
                     self.items[i]["status"].configure(text=f"✓ {shorten(Path(dst).name, 28)}", text_color=OK)
                     self._progress(i + 1, total)
                 elif kind == "err":
                     _, i, total, text = msg
+                    self._row_bar(self.items[i], "error")
                     self.items[i]["status"].configure(text=f"✗ {shorten(text, 34)}", text_color=DANGER)
                     self._progress(i + 1, total)
                 elif kind == "done":
@@ -807,7 +863,6 @@ class App(ctk.CTk, _DnDBase):
 
     def _progress(self, n, total):
         self.bar.set(n / total)
-        self._set_status(f"Converting {n} of {total}…", MUTED)
 
     def _finished(self, done, failed, stopped):
         self._set_busy(False)

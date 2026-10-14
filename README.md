@@ -38,7 +38,8 @@
 
 ## Features
 
-- **Batch conversion**: add many images at once (**Add images…**, **Add folder…**, or drag and drop) and convert them all in one go.
+- **Batch conversion**: add many images at once (**Add images…**, **Add folder…**, or drag and drop). Each one is shown with a **thumbnail**, its name, format, size and file size.
+- **Live progress**: images are converted one after another; every row has its own progress bar and status (✓ new file name / ✗ reason), plus an overall bar at the bottom.
 - **7 output formats**: JPG, PNG, WEBP, BMP, GIF, TIFF and ICO.
 - **Quality slider** for JPG and WEBP.
 - **Real Windows icons**: ICO output contains 16, 32, 48 and 256 px sizes, keeps the aspect ratio and the transparency.
