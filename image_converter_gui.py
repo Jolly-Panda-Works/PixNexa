@@ -21,7 +21,9 @@ import PIL.ImageTk  # noqa: F401              would miss it unless it is importe
 from PIL import Image, ImageOps
 
 import converter_core as core
+import shell_integration
 from app_common import APP_AUTHOR, APP_LICENSE, APP_NAME, APP_REPO, APP_SLUG, APP_URL, APP_VERSION, APP_WEBSITE
+from single_instance import SingleInstance
 
 try:  # drag and drop is optional: without tkinterdnd2 everything else still works
     from tkinterdnd2 import DND_FILES, TkinterDnD
@@ -181,9 +183,13 @@ def schedule_titlebar_style(win, color=None):
         win.after(ms, lambda: style_titlebar(win, color))
 
 
-def settings_file():
+def settings_dir():
     base = Path(os.environ.get("APPDATA") or (Path.home() / ".config"))
-    return base / APP_SLUG / "settings.json"
+    return base / APP_SLUG
+
+
+def settings_file():
+    return settings_dir() / "settings.json"
 
 
 DEFAULT_SETTINGS = {"format": "png", "quality": core.DEFAULT_QUALITY, "output": OUT_SAME,
@@ -271,7 +277,7 @@ class SettingsDialog(ctk.CTkToplevel):
         schedule_titlebar_style(self, BG)
         self.app = app
         self.title("Settings")
-        self.geometry("480x440")
+        self.geometry("480x" + ("590" if shell_integration.is_supported() else "440"))
         self.resizable(False, False)
         self.transient(app)
         self.columnconfigure(0, weight=1)
@@ -308,12 +314,40 @@ class SettingsDialog(ctk.CTkToplevel):
                      justify="left", wraplength=400).grid(row=6, column=0, columnspan=2, sticky="w",
                                                           padx=18, pady=(0, 16))
 
+        if shell_integration.is_supported():
+            self._build_menu_card(app)
+
         foot = ctk.CTkFrame(self, fg_color="transparent")
-        foot.grid(row=2, column=0, sticky="ew", padx=28, pady=(18, 0))
+        foot.grid(row=3, column=0, sticky="ew", padx=28, pady=(18, 0))
         foot.columnconfigure(0, weight=1)
         app._ghost(foot, "Reset options", self.reset, width=130).grid(row=0, column=0, sticky="w")
         app._primary(foot, "Done", self.destroy, width=110).grid(row=0, column=1, sticky="e")
         self.after(150, self._focus)
+
+    def _build_menu_card(self, app):
+        card = app._card(self)
+        card.grid(row=2, column=0, sticky="ew", padx=28, pady=(14, 0))
+        card.columnconfigure(0, weight=1)
+        ctk.CTkLabel(card, text="WINDOWS EXPLORER", font=app.f_section, text_color=ORANGE).grid(
+            row=0, column=0, sticky="w", padx=18, pady=(14, 8))
+        self.menu_var = tk.BooleanVar(value=shell_integration.is_registered())
+        self.menu_switch = app._switch(card, "Add “Convert” to the right-click menu of images", self.menu_var)
+        self.menu_switch.configure(command=self._toggle_menu)
+        self.menu_switch.grid(row=1, column=0, sticky="w", padx=18)
+        self.menu_note = ctk.CTkLabel(
+            card, text="Right-click an image → Convert with Image Format Converter. On Windows 11 it is under "
+                       "“Show more options”.", font=app.f_small, text_color=MUTED, anchor="w", justify="left",
+            wraplength=400)
+        self.menu_note.grid(row=2, column=0, sticky="w", padx=18, pady=(8, 14))
+
+    def _toggle_menu(self):
+        want = bool(self.menu_var.get())
+        ok = shell_integration.register() if want else shell_integration.unregister()
+        if ok:
+            self.menu_note.configure(text_color=OK, text="Added." if want else "Removed.")
+        else:
+            self.menu_var.set(not want)
+            self.menu_note.configure(text_color=DANGER, text="Windows did not allow that change. Try again.")
 
     def _focus(self):
         try:
@@ -329,9 +363,12 @@ class SettingsDialog(ctk.CTkToplevel):
 # ───────────────────────── main window ─────────────────────────
 
 class App(ctk.CTk, _DnDBase):
-    def __init__(self):
+    def __init__(self, initial_paths=None, instance=None):
         set_windows_app_id()
         super().__init__(fg_color=BG)
+        self.instance = instance
+        self._pending_paths = []
+        self._results_shown = False
         apply_window_icon(self)
         self.title(f"{APP_NAME} - JPG, PNG, WEBP, BMP, GIF, TIFF, ICO")
         self.geometry("1040x700")
@@ -395,6 +432,12 @@ class App(ctk.CTk, _DnDBase):
         self.after(60, self._poll)
         self.after(300, lambda: apply_window_icon(self))
         schedule_titlebar_style(self, TOOLBAR)
+        if shell_integration.is_supported():
+            self.after(1500, shell_integration.refresh_if_stale)   # the exe was moved or updated
+        if initial_paths:
+            self.after(150, lambda: self.add_external(initial_paths))
+        if self.instance is not None:
+            self.after(300, self._check_inbox)
 
     # ───────────── reusable widgets ─────────────
 
@@ -686,6 +729,7 @@ class App(ctk.CTk, _DnDBase):
             parts.append(f"{duplicates} already in the list")
         self._set_status(", ".join(parts) + ".", OK if added else (DANGER if skipped else MUTED))
         self.bar.set(0)
+        self._results_shown = False
         self._refresh_list()
 
     def _add_row(self, path, info):
@@ -707,7 +751,7 @@ class App(ctk.CTk, _DnDBase):
                                command=lambda it=item: self.remove_item(it))
         remove.grid(row=0, column=3, padx=(0, 8), pady=(8, 0))
         item["remove"] = remove
-        bar = ctk.CTkProgressBar(row, height=6, corner_radius=3, fg_color=PANEL, progress_color=ORANGE)
+        bar = ctk.CTkProgressBar(row, height=6, corner_radius=3, fg_color=PANEL, progress_color=PANEL)
         bar.set(0)
         bar.grid(row=1, column=1, columnspan=3, sticky="ew", padx=(8, 12), pady=(6, 12))
         item["bar"] = bar
@@ -772,6 +816,37 @@ class App(ctk.CTk, _DnDBase):
 
     def _set_status(self, text, color=MUTED):
         self.status.configure(text=text, text_color=color)
+
+    # ───────────── files from Explorer's right-click menu / a second launch ─────────────
+
+    def _check_inbox(self):
+        try:
+            for paths in self.instance.collect():
+                self.bring_to_front()
+                if paths:
+                    self.add_external(paths)
+        except Exception:
+            pass
+        self.after(400, self._check_inbox)
+
+    def add_external(self, paths):
+        """Paths that arrive from outside the window. They wait if a conversion is running."""
+        if self.busy:
+            self._pending_paths.extend(paths)
+            return
+        if self._results_shown:                  # the last batch is finished: start a fresh list
+            self.clear_items()
+        self.add_paths(paths)
+
+    def bring_to_front(self):
+        try:
+            self.deiconify()
+            self.lift()
+            self.attributes("-topmost", True)
+            self.after(300, lambda: self.attributes("-topmost", False))
+            self.focus_force()
+        except Exception:
+            pass
 
     # ───────────── converting ─────────────
 
@@ -875,6 +950,10 @@ class App(ctk.CTk, _DnDBase):
         else:
             text, color = f"Done! {done} image{'s' if done != 1 else ''} converted.", OK
         self._set_status(text, color)
+        self._results_shown = True
+        if self._pending_paths:
+            waiting, self._pending_paths = self._pending_paths, []
+            self.add_external(waiting)
         if self.open_after.get() and self.last_outputs:
             if len(self.last_outputs) == 1:
                 reveal(self.last_outputs[0])
@@ -884,11 +963,25 @@ class App(ctk.CTk, _DnDBase):
     def on_close(self):
         self.stop_event.set()
         self._save()
+        if self.instance is not None:
+            self.instance.release()
         self.destroy()
 
 
-def main():
-    App().mainloop()
+def main(argv=None):
+    argv = sys.argv[1:] if argv is None else list(argv)
+    # Used by the installer: add / remove the Explorer menu item without opening a window.
+    if "--register-menu" in argv:
+        sys.exit(0 if shell_integration.register() else 1)
+    if "--unregister-menu" in argv:
+        sys.exit(0 if shell_integration.unregister() else 1)
+
+    paths = [a for a in argv if not a.startswith("--")]
+    instance = SingleInstance(settings_dir())
+    if not instance.acquire():          # the app is already open: hand it the files and quit
+        instance.send(paths)
+        return
+    App(paths, instance).mainloop()
 
 
 if __name__ == "__main__":

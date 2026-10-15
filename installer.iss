@@ -30,9 +30,17 @@ DisableProgramGroupPage=yes
 [Files]
 Source: "dist\ImageFormatConverter\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs
 
+[Tasks]
+Name: "contextmenu"; Description: "Add ""Convert with Image Format Converter"" to the right-click menu of images"
+
 [Icons]
 Name: "{group}\Image Format Converter"; Filename: "{app}\ImageFormatConverter.exe"
 Name: "{autodesktop}\Image Format Converter"; Filename: "{app}\ImageFormatConverter.exe"
 
 [Run]
+; Adds the Explorer right-click item (current user only); the app does it itself so there is one code path.
+Filename: "{app}\ImageFormatConverter.exe"; Parameters: "--register-menu"; Tasks: contextmenu; Flags: runhidden
 Filename: "{app}\ImageFormatConverter.exe"; Description: "Launch Image Format Converter"; Flags: nowait postinstall skipifsilent
+
+[UninstallRun]
+Filename: "{app}\ImageFormatConverter.exe"; Parameters: "--unregister-menu"; Flags: runhidden; RunOnceId: "RemoveContextMenu"

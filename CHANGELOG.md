@@ -14,6 +14,8 @@ Image Format Converter is now a real Windows desktop app, built and released by 
 ### Added
 - Desktop app with a dark-and-orange interface (same theme as SnapshotAll): `image_converter_gui.py`.
 - Batch conversion: add files, add a folder, or drag and drop. Every image is listed with a thumbnail and its details.
+- Explorer right-click menu: **Convert with Image Format Converter** opens the app with the clicked image(s). Offered by the installer and in Settings → Windows Explorer (per user, no admin rights). The app runs as a single window; extra launches pass their files to it.
+- `--register-menu` / `--unregister-menu` command-line switches (used by the installer).
 - Images are converted one by one, each with its own progress bar, in addition to the overall bar.
 - WEBP output, and a quality slider for JPG and WEBP.
 - Animated GIF ⇄ WEBP conversion that keeps all frames.

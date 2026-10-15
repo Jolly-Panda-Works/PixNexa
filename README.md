@@ -47,6 +47,7 @@
 - **Animated GIF ⇄ WEBP** keep every frame and its timing.
 - **Camera rotation** (EXIF orientation) is applied, so photos never come out sideways.
 - **Safe by default**: an existing file is never overwritten (you get `photo (1).png`) unless you switch that on.
+- **Right-click menu in Explorer**: right-click an image → **Convert with Image Format Converter**. The app opens with that image already added; select several images and they all land in the same window.
 - **Save next to the original** or into a folder of your choice.
 - Works with **Persian and other non-English file names**, and Ctrl+C / Ctrl+V work with any keyboard layout.
 - **Private**: everything runs on your computer, there is no network access and no telemetry.
@@ -83,13 +84,23 @@
 
 ## How to use it
 
-1. Add images: click **Add images…** (or press `Ctrl+O`), **Add folder…**, or drag files and folders onto the window.
+1. Add images: click **Add images…** (or press `Ctrl+O`), **Add folder…**, drag files and folders onto the window, or right-click an image in Explorer (see below).
 2. Choose the target format on the right. For JPG and WEBP, set the quality.
 3. Choose where to save: **Next to the original** (default) or a **Custom folder**.
 4. Press **Convert**. Each row shows ✓ with the new file name, or ✗ with the reason it failed.
 5. The folder opens when it is finished (can be turned off).
 
 Your options are remembered. **Settings → Reset options** brings the defaults back.
+
+### Right-click menu in Windows Explorer
+
+Right-click an image → **Convert with Image Format Converter**. The app opens (or comes to the front if it is already open) with the image added; you pick the format and press Convert there.
+
+- The installer offers this as an option (on by default) and removes it again when you uninstall.
+- With the portable version, or when running from source, turn it on in **Settings → Windows Explorer**. It is stored for your user only: no administrator rights are needed.
+- On **Windows 11** the item is in the classic menu: right-click → **Show more options**.
+- Select several images and right-click: they all open in one window (Windows itself may ask for confirmation when you select a large number of files).
+- If the item ever points to an old location (you moved the app), the app repairs it the next time it starts.
 
 ## Run from source
 
@@ -149,6 +160,8 @@ On Windows, double-click `build_exe.bat`. It creates `dist\ImageFormatConverter\
 image-format-converter/
 ├── image_converter_gui.py   # desktop app: window, drag and drop, settings (customtkinter)
 ├── converter_core.py        # conversion engine (Pillow, no GUI code)
+├── shell_integration.py     # Explorer right-click menu entry (per-user registry keys)
+├── single_instance.py       # one window only; later launches hand their files to it
 ├── app_common.py            # app name, version, author, links
 ├── VERSION                  # the version number (single source of truth)
 ├── tools/
@@ -173,6 +186,7 @@ image-format-converter/
 - **Metadata** (EXIF, GPS, camera info) is not copied to the new file. Color profiles are kept for JPG, PNG, WEBP and TIFF.
 - Converting to **JPG/WEBP** is lossy; converting to **GIF** reduces the image to 256 colors.
 - Folders are added without their sub-folders.
+- The Explorer right-click item is for single files or a selection of files, not for folders, and it is not shown in Windows 11's new compact menu (only under **Show more options**).
 - No code signing yet, so Windows SmartScreen may warn on first launch.
 
 ## Troubleshooting
@@ -182,6 +196,7 @@ image-format-converter/
 | "Windows protected your PC" | Click **More info → Run anyway**. See [CODE_SIGNING.md](CODE_SIGNING.md). |
 | A row says ✗ "Not a supported image file" | The file is damaged or is not a raster image (for example SVG or a PDF). |
 | Drag and drop does nothing | Use **Add images…** instead. Dropping onto an app that runs as administrator is blocked by Windows. |
+| The right-click item is missing | Turn it on in **Settings → Windows Explorer**. On Windows 11 look under **Show more options**. |
 | Ctrl+V does not paste into the folder field | Right-click the field → Paste. |
 | Output is next to the original but the file has `(1)` in its name | A file with that name already existed. Turn on **Replace files with the same name** to overwrite it. |
 

@@ -63,3 +63,44 @@ def test_settings_roundtrip(app):
     import image_converter_gui as gui
     saved = gui.load_settings()
     assert saved["format"] == "ico" and saved["overwrite"] is True
+
+
+def test_paths_from_the_command_line_and_the_inbox(tmp_path, monkeypatch):
+    monkeypatch.setenv("APPDATA", str(tmp_path / "appdata"))
+    import image_converter_gui as gui
+    from single_instance import SingleInstance
+
+    one, two = tmp_path / "one.png", tmp_path / "two.png"
+    for p in (one, two):
+        Image.new("RGB", (8, 8)).save(p)
+    inst = SingleInstance(gui.settings_dir())
+    assert inst.acquire()
+    try:
+        window = gui.App([str(one)], inst)
+    except Exception as exc:
+        pytest.skip(f"cannot open a window here: {exc}")
+    try:
+        pump(window, 0.6)
+        assert [it["path"].name for it in window.items] == ["one.png"]
+
+        SingleInstance(gui.settings_dir()).send([str(two)])    # a second launch, e.g. another right-click
+        pump(window, 1.0)
+        assert [it["path"].name for it in window.items] == ["one.png", "two.png"]
+    finally:
+        window.on_close()
+
+
+def test_new_files_start_a_fresh_list_after_a_finished_batch(app, tmp_path):
+    old, new = tmp_path / "old.png", tmp_path / "new.png"
+    for p in (old, new):
+        Image.new("RGB", (8, 8)).save(p)
+    app.add_paths([str(old)])
+    app.open_after.set(False)
+    app.on_convert()
+    deadline = time.time() + 20
+    while app.busy and time.time() < deadline:
+        app.update()
+        time.sleep(0.01)
+    pump(app)
+    app.add_external([str(new)])
+    assert [it["path"].name for it in app.items] == ["new.png"]
