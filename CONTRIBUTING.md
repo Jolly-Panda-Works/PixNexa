@@ -1,4 +1,4 @@
-# Contributing to Image Format Converter
+# Contributing to PixNexa Desktop
 
 Thanks for taking the time to contribute! This is a small, focused project (a Pillow-based
 conversion engine and a CustomTkinter window), so the bar for contributing is low and PRs are very welcome.

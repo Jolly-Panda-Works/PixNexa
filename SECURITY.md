@@ -11,7 +11,7 @@ Only the latest released version is actively supported with security fixes.
 
 ## Reporting a Vulnerability
 
-Image Format Converter is a local Windows app with no network access and no telemetry. It does read image
+PixNexa Desktop is a local Windows app with no network access and no telemetry. It does read image
 files, so the most relevant problems are in how files are decoded and written (for example a crafted image that
 crashes the app, unsafe handling of file paths, or a problem in a bundled dependency such as Pillow). If you
 find a security issue, please report it privately rather than opening a public issue:

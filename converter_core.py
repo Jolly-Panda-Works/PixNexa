@@ -1,4 +1,4 @@
-"""Image conversion engine for Image Format Converter.
+"""Image conversion engine for PixNexa Desktop.
 
 Pure Pillow, no GUI imports, so it can be tested and reused on its own:
 

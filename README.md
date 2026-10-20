@@ -1,32 +1,33 @@
 <p align="center">
-  <img src="assets/logo.png" alt="Image Format Converter logo" width="120">
+  <img src="assets/logo.png" alt="PixNexa logo" width="120">
 </p>
 
-# Image Format Converter
+# PixNexa
 
-**Convert images between JPG, PNG, WEBP, BMP, GIF, TIFF and ICO. Drop in one file or a hundred, pick a format, press Convert.**
+**Fast, private image conversion. Everything runs on your own device, nothing is uploaded.**
 
-[![Build](https://github.com/Usef-Farahmand/image-format-converter/actions/workflows/build.yml/badge.svg)](https://github.com/Usef-Farahmand/image-format-converter/actions/workflows/build.yml)
+[![Build Windows](https://github.com/Usef-Farahmand/image-format-converter/actions/workflows/build.yml/badge.svg)](https://github.com/Usef-Farahmand/image-format-converter/actions/workflows/build.yml)
+[![Build Android](https://github.com/Usef-Farahmand/image-format-converter/actions/workflows/android.yml/badge.svg)](https://github.com/Usef-Farahmand/image-format-converter/actions/workflows/android.yml)
 [![CI](https://github.com/Usef-Farahmand/image-format-converter/actions/workflows/ci.yml/badge.svg)](https://github.com/Usef-Farahmand/image-format-converter/actions/workflows/ci.yml)
 [![Latest release](https://img.shields.io/github/v/release/Usef-Farahmand/image-format-converter?display_name=tag&color=F97316)](https://github.com/Usef-Farahmand/image-format-converter/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/Usef-Farahmand/image-format-converter/total?color=F97316)](https://github.com/Usef-Farahmand/image-format-converter/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Usef-Farahmand/image-format-converter/blob/main/LICENSE)
-[![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://github.com/Usef-Farahmand/image-format-converter#run-from-source)
-[![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)](https://github.com/Usef-Farahmand/image-format-converter#download-and-install-windows)
 
-[Download](https://github.com/Usef-Farahmand/image-format-converter/releases/latest) · [Report a bug](https://github.com/Usef-Farahmand/image-format-converter/issues/new?template=bug_report.md) · [Request a feature](https://github.com/Usef-Farahmand/image-format-converter/issues/new?template=feature_request.md)
+**Website and downloads: https://usef-farahmand.github.io/image-format-converter/** · [Report a bug](https://github.com/Usef-Farahmand/image-format-converter/issues/new?template=bug_report.md) · [Request a feature](https://github.com/Usef-Farahmand/image-format-converter/issues/new?template=feature_request.md)
 
-![Image Format Converter](docs/screenshot-main.png)
+| Edition | Platform | What it does | Download |
+| ------- | -------- | ------------ | -------- |
+| **PixNexa Desktop** | Windows 10/11 | Batch conversion to JPG, PNG, WEBP, BMP, GIF, TIFF and ICO, drag and drop, Explorer right-click menu | [`PixNexa_Setup.exe` / `PixNexa_Portable.zip`](https://github.com/Usef-Farahmand/image-format-converter/releases/latest) |
+| **PixNexa Mobile** | Android 7.0+ | Pick, convert (PNG, JPEG, WebP) and share images, fully offline, Persian and English | [`PixNexa.apk`](https://github.com/Usef-Farahmand/image-format-converter/releases?q=android&expanded=true) |
+| **PixNexa Web** | Any modern browser | Batch PNG/JPEG/WebP conversion inside the browser (nothing is uploaded), quality slider, before/after sizes, ZIP download | [Open it](https://usef-farahmand.github.io/image-format-converter/#convert) |
+
+This README covers **PixNexa Desktop**. PixNexa Mobile lives in [`android/`](android/README.md): every push to `main` builds a new APK and publishes it as a release tagged `android-v1.0.N`. The website is in [`site/`](site/) and is deployed by [`pages.yml`](.github/workflows/pages.yml).
+
+![PixNexa Desktop](docs/screenshot-main.png)
 
 *Screenshot uses demo data.*
 
 ---
-
-## PixNexa Mobile (Android) and the website
-
-This repository also contains **PixNexa Mobile**, the Android app (`com.jollypanda.pixnexa`): batch conversion between PNG, JPEG and WebP, quality slider with before/after file sizes, saving to the gallery or any folder, the Android Share menu, dark theme and a Persian interface, fully offline. Source and build notes: [`android/`](android/README.md). Every push to `main` builds a new APK and publishes it as a release tagged `android-v1.0.N`.
-
-The website with the download and install guide is in [`site/`](site/) and is deployed to **https://usef-farahmand.github.io/image-format-converter/** by [`pages.yml`](.github/workflows/pages.yml) (one-time setup: *Settings → Pages → Source: GitHub Actions*).
 
 ## Table of contents
 
@@ -53,7 +54,7 @@ The website with the download and install guide is in [`site/`](site/) and is de
 - **Animated GIF ⇄ WEBP** keep every frame and its timing.
 - **Camera rotation** (EXIF orientation) is applied, so photos never come out sideways.
 - **Safe by default**: an existing file is never overwritten (you get `photo (1).png`) unless you switch that on.
-- **Right-click menu in Explorer**: right-click an image → **Convert with Image Format Converter**. The app opens with that image already added; select several images and they all land in the same window.
+- **Right-click menu in Explorer**: right-click an image → **Convert with PixNexa**. The app opens with that image already added; select several images and they all land in the same window.
 - **Save next to the original** or into a folder of your choice.
 - Works with **Persian and other non-English file names**, and Ctrl+C / Ctrl+V work with any keyboard layout.
 - **Private**: everything runs on your computer, there is no network access and no telemetry.
@@ -79,10 +80,12 @@ The website with the download and install guide is in [`site/`](site/) and is de
 
 ## Download and install (Windows)
 
+> Earlier versions were called *Image Format Converter*. Installing PixNexa Desktop over them upgrades in place: your options and the right-click menu are carried over.
+
 1. Open the [**Releases**](https://github.com/Usef-Farahmand/image-format-converter/releases/latest) page.
 2. Download one of:
-   - `ImageFormatConverter_Setup.exe`: installer (Start menu + desktop shortcut, no admin rights needed)
-   - `ImageFormatConverter_Portable.zip`: no installation; unzip and run `ImageFormatConverter.exe`
+   - `PixNexa_Setup.exe`: installer (Start menu + desktop shortcut, no admin rights needed)
+   - `PixNexa_Portable.zip`: no installation; unzip and run `PixNexa.exe`
 3. Run it.
 
 > **Windows SmartScreen warning?** The app is not code-signed yet. Click **More info → Run anyway**. Every release ships with `SHA256SUMS.txt` so you can verify your download; see [CODE_SIGNING.md](CODE_SIGNING.md).
@@ -100,7 +103,7 @@ Your options are remembered. **Settings → Reset options** brings the defaults 
 
 ### Right-click menu in Windows Explorer
 
-Right-click an image → **Convert with Image Format Converter**. The app opens (or comes to the front if it is already open) with the image added; you pick the format and press Convert there.
+Right-click an image → **Convert with PixNexa**. The app opens (or comes to the front if it is already open) with the image added; you pick the format and press Convert there.
 
 - The installer offers this as an option (on by default) and removes it again when you uninstall.
 - With the portable version, or when running from source, turn it on in **Settings → Windows Explorer**. It is stored for your user only: no administrator rights are needed.
@@ -146,7 +149,7 @@ python -m pytest
 | ------- | ------ |
 | Pull request | Build + tests. Files are kept as **Artifacts** of the run for 14 days (Actions → the run → Artifacts). No tag, no release. |
 | Push to `develop` | Same, plus a git tag `vMAJOR.MINOR.0-dev.<build number>`. No release. |
-| Push to `main` | Same, plus a git tag and a public **GitHub Release** `vMAJOR.MINOR.<build number>` with `ImageFormatConverter_Setup.exe`, `ImageFormatConverter_Portable.zip` and `SHA256SUMS.txt`. |
+| Push to `main` | Same, plus a git tag and a public **GitHub Release** `vMAJOR.MINOR.<build number>` with `PixNexa_Setup.exe`, `PixNexa_Portable.zip` and `SHA256SUMS.txt`. |
 | Push of a tag `vX.Y.Z` | A release named exactly after the tag. |
 | *Run workflow* button | Same as a push to the selected branch. |
 
@@ -158,7 +161,7 @@ Pushes that only change docs (`*.md`, `docs/`, issue templates ...) do not start
 
 ## Build it yourself
 
-On Windows, double-click `build_exe.bat`. It creates `dist\ImageFormatConverter\ImageFormatConverter.exe`, and if [Inno Setup](https://jrsoftware.org/isinfo.php) is installed also `Output\ImageFormatConverter_Setup.exe`.
+On Windows, double-click `build_exe.bat`. It creates `dist\PixNexa\PixNexa.exe`, and if [Inno Setup](https://jrsoftware.org/isinfo.php) is installed also `Output\PixNexa_Setup.exe`.
 
 ## Project structure
 

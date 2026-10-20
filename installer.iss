@@ -7,19 +7,19 @@
 [Setup]
 ; Fixed AppId: a newer installer upgrades the installed app instead of installing a second copy.
 AppId={{07E7C29D-17D8-44B5-875C-F66CD55D6E3F}
-AppName=Image Format Converter
+AppName=PixNexa Desktop
 AppVersion={#MyAppVersion}
-AppVerName=Image Format Converter {#MyAppVersion}
+AppVerName=PixNexa Desktop {#MyAppVersion}
 AppPublisher=Usef Farahmand
-AppPublisherURL=https://www.useffarahmand.com/
+AppPublisherURL=https://usef-farahmand.github.io/image-format-converter/
 AppSupportURL=https://github.com/Usef-Farahmand/image-format-converter/issues
 AppUpdatesURL=https://github.com/Usef-Farahmand/image-format-converter/releases
-DefaultDirName={autopf}\ImageFormatConverter
-DefaultGroupName=Image Format Converter
+DefaultDirName={autopf}\PixNexa
+DefaultGroupName=PixNexa Desktop
 OutputDir=Output
-OutputBaseFilename=ImageFormatConverter_Setup
+OutputBaseFilename=PixNexa_Setup
 SetupIconFile=assets\icon.ico
-UninstallDisplayIcon={app}\ImageFormatConverter.exe
+UninstallDisplayIcon={app}\PixNexa.exe
 LicenseFile=LICENSE
 WizardStyle=modern
 Compression=lzma2
@@ -27,20 +27,28 @@ SolidCompression=yes
 PrivilegesRequired=lowest
 DisableProgramGroupPage=yes
 
+[InstallDelete]
+; Upgrading from "Image Format Converter" (same AppId): remove the old exe and its shortcuts.
+Type: files; Name: "{app}\ImageFormatConverter.exe"
+Type: files; Name: "{autodesktop}\Image Format Converter.lnk"
+Type: files; Name: "{group}\Image Format Converter.lnk"
+Type: files; Name: "{autoprograms}\Image Format Converter.lnk"
+Type: filesandordirs; Name: "{autoprograms}\Image Format Converter"
+
 [Files]
-Source: "dist\ImageFormatConverter\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs
+Source: "dist\PixNexa\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs
 
 [Tasks]
-Name: "contextmenu"; Description: "Add ""Convert with Image Format Converter"" to the right-click menu of images"
+Name: "contextmenu"; Description: "Add ""Convert with PixNexa"" to the right-click menu of images"
 
 [Icons]
-Name: "{group}\Image Format Converter"; Filename: "{app}\ImageFormatConverter.exe"
-Name: "{autodesktop}\Image Format Converter"; Filename: "{app}\ImageFormatConverter.exe"
+Name: "{group}\PixNexa Desktop"; Filename: "{app}\PixNexa.exe"
+Name: "{autodesktop}\PixNexa Desktop"; Filename: "{app}\PixNexa.exe"
 
 [Run]
 ; Adds the Explorer right-click item (current user only); the app does it itself so there is one code path.
-Filename: "{app}\ImageFormatConverter.exe"; Parameters: "--register-menu"; Tasks: contextmenu; Flags: runhidden
-Filename: "{app}\ImageFormatConverter.exe"; Description: "Launch Image Format Converter"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\PixNexa.exe"; Parameters: "--register-menu"; Tasks: contextmenu; Flags: runhidden
+Filename: "{app}\PixNexa.exe"; Description: "Launch PixNexa Desktop"; Flags: nowait postinstall skipifsilent
 
 [UninstallRun]
-Filename: "{app}\ImageFormatConverter.exe"; Parameters: "--unregister-menu"; Flags: runhidden; RunOnceId: "RemoveContextMenu"
+Filename: "{app}\PixNexa.exe"; Parameters: "--unregister-menu"; Flags: runhidden; RunOnceId: "RemoveContextMenu"

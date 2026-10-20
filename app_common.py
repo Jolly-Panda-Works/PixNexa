@@ -1,8 +1,10 @@
-"""Shared constants for Image Format Converter (name, version, author, links)."""
+"""Shared constants for PixNexa Desktop (name, version, author, links)."""
 from pathlib import Path
 
-APP_NAME = "Image Format Converter"
-APP_SLUG = "ImageFormatConverter"          # exe / installer / settings-folder name
+APP_BRAND = "PixNexa"
+APP_NAME = "PixNexa Desktop"
+APP_SLUG = "PixNexa"                       # exe / installer / settings-folder name
+LEGACY_SLUG = "ImageFormatConverter"       # name before the PixNexa rebrand (settings and menu are migrated)
 APP_AUTHOR = "Usef Farahmand"
 APP_URL = "https://github.com/Usef-Farahmand"
 APP_WEBSITE = "https://www.useffarahmand.com/"

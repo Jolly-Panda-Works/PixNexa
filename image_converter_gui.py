@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Image Format Converter - desktop app.
+"""PixNexa Desktop - desktop app.
 
 Add images (button, drag and drop, or a whole folder), pick a target format, press Convert.
 Dark + orange interface, shared with SnapshotAll.
@@ -22,7 +22,18 @@ from PIL import Image, ImageOps
 
 import converter_core as core
 import shell_integration
-from app_common import APP_AUTHOR, APP_LICENSE, APP_NAME, APP_REPO, APP_SLUG, APP_URL, APP_VERSION, APP_WEBSITE
+from app_common import (
+    APP_AUTHOR,
+    APP_BRAND,
+    APP_LICENSE,
+    APP_NAME,
+    APP_REPO,
+    APP_SLUG,
+    APP_URL,
+    APP_VERSION,
+    APP_WEBSITE,
+    LEGACY_SLUG,
+)
 from single_instance import SingleInstance
 
 try:  # drag and drop is optional: without tkinterdnd2 everything else still works
@@ -185,7 +196,13 @@ def schedule_titlebar_style(win, color=None):
 
 def settings_dir():
     base = Path(os.environ.get("APPDATA") or (Path.home() / ".config"))
-    return base / APP_SLUG
+    folder, legacy = base / APP_SLUG, base / LEGACY_SLUG
+    if not folder.exists() and legacy.is_dir():   # keep the options saved before the PixNexa rebrand
+        try:
+            legacy.rename(folder)
+        except OSError:
+            return legacy
+    return folder
 
 
 def settings_file():
@@ -335,7 +352,7 @@ class SettingsDialog(ctk.CTkToplevel):
         self.menu_switch.configure(command=self._toggle_menu)
         self.menu_switch.grid(row=1, column=0, sticky="w", padx=18)
         self.menu_note = ctk.CTkLabel(
-            card, text="Right-click an image → Convert with Image Format Converter. On Windows 11 it is under "
+            card, text=f"Right-click an image → Convert with {APP_BRAND}. On Windows 11 it is under "
                        "“Show more options”.", font=app.f_small, text_color=MUTED, anchor="w", justify="left",
             wraplength=400)
         self.menu_note.grid(row=2, column=0, sticky="w", padx=18, pady=(8, 14))
