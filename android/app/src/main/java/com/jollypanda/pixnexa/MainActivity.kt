@@ -19,8 +19,8 @@ class MainActivity : AppCompatActivity() {
         Prefs.applyTheme(Prefs(this).theme)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        // Images shared to PixNexa ("Share → PixNexa"). Skipped after a rotation or language change.
-        if (savedInstanceState == null) viewModel.addImages(sharedImages(intent))
+        // Files shared to PixNexa ("Share → PixNexa"). Skipped after a rotation or language change.
+        if (savedInstanceState == null) viewModel.addFiles(sharedFiles(intent))
         setContent {
             PixNexaTheme {
                 MainScreen(viewModel)
@@ -30,10 +30,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        viewModel.addImages(sharedImages(intent))
+        viewModel.addFiles(sharedFiles(intent))
     }
 
-    private fun sharedImages(intent: Intent?): List<Uri> {
+    private fun sharedFiles(intent: Intent?): List<Uri> {
         intent ?: return emptyList()
         val uris = when (intent.action) {
             Intent.ACTION_SEND -> listOfNotNull(IntentCompat.getParcelableExtra(intent, Intent.EXTRA_STREAM, Uri::class.java))

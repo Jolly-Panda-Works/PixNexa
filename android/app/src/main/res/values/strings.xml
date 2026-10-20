@@ -2,45 +2,114 @@
 <resources>
     <string name="app_name" translatable="false">PixNexa</string>
     <string name="share_target_label">Convert with PixNexa</string>
-    <string name="tagline">Convert PNG, JPEG and WebP. Offline and private.</string>
+    <string name="tagline">Convert and compress images, video, audio and PDF. Offline and private.</string>
 
-    <string name="select_images">Select images</string>
-    <string name="add_more">Add images</string>
+    <string name="select_media">Photos &amp; videos</string>
+    <string name="select_files">Files (audio, PDF…)</string>
+    <string name="add_more">Add</string>
     <string name="clear_all">Clear list</string>
-    <string name="empty_title">Pick some images to convert</string>
-    <string name="empty_body">Choose one photo or many at once. Everything is converted on your phone; nothing is uploaded.</string>
+    <string name="empty_title">Pick files to convert or compress</string>
+    <string name="empty_body">Photos, videos, music and PDF files, one or many at once. Everything happens on your phone; nothing is uploaded.</string>
     <string name="offline_badge">100% offline</string>
+
+    <string name="kind_image">Images</string>
+    <string name="kind_video">Video</string>
+    <string name="kind_audio">Audio</string>
+    <string name="kind_pdf" translatable="false">PDF</string>
+    <string name="kind_images_count">Images (%1$d)</string>
+    <string name="kind_videos_count">Videos (%1$d)</string>
+    <string name="kind_audio_count">Audio (%1$d)</string>
+    <string name="kind_pdfs_count">PDF files (%1$d)</string>
+
+    <string name="mode_convert">Convert</string>
+    <string name="mode_compress">Compress</string>
 
     <string name="format_jpeg" translatable="false">JPEG</string>
     <string name="format_png" translatable="false">PNG</string>
     <string name="format_webp" translatable="false">WebP</string>
-    <string name="format_label">Output format</string>
+    <string name="format_pdf" translatable="false">PDF</string>
     <string name="quality_label">Quality</string>
     <string name="quality_value">%1$d%%</string>
     <string name="quality_lossless">PNG is lossless, so there is no quality setting.</string>
+    <string name="images_to_pdf_hint">All %1$d images are combined into ONE PDF file (one page per image).</string>
+    <string name="page_size">Page size</string>
+    <string name="page_fit">Fit to image</string>
+    <string name="page_a4" translatable="false">A4</string>
+    <string name="compress_image_hint">Each image keeps its format (JPEG, PNG or WebP); HEIC, AVIF, GIF and other formats are saved as JPEG. PNG is lossless, so only resizing makes it smaller.</string>
+    <string name="resize_label">Max size (longest side)</string>
+    <string name="size_original">Original</string>
+    <string name="size_4k" translatable="false">4K</string>
+    <string name="size_1080" translatable="false">1080p</string>
+    <string name="size_720" translatable="false">720p</string>
+    <string name="size_480" translatable="false">480p</string>
+    <string name="target_size">Target size</string>
+    <string name="target_size_hint">Best quality that fits. Empty = off.</string>
+    <string name="target_off">Off</string>
+    <string name="unit_kb" translatable="false">KB</string>
+
+    <string name="video_h264" translatable="false">MP4 · H.264</string>
+    <string name="video_hevc" translatable="false">MP4 · HEVC</string>
+    <string name="video_audio_only">Audio (M4A)</string>
+    <string name="video_extract_hint">Keeps only the sound track, as AAC audio in an M4A file.</string>
+    <string name="resolution">Resolution</string>
+    <string name="compress_video_hint">Re-encoded as H.264 MP4 at a lower bitrate. Videos are never made larger.</string>
+    <string name="video_quality">Video quality</string>
+    <string name="quality_high">High</string>
+    <string name="quality_medium">Medium</string>
+    <string name="quality_small">Smallest</string>
+
+    <string name="audio_hint">Saved as M4A (AAC). MP3 cannot be created: Android has no built-in MP3 encoder.</string>
+    <string name="audio_bitrate">Bitrate</string>
+    <string name="kbps_64" translatable="false">64k</string>
+    <string name="kbps_96" translatable="false">96k</string>
+    <string name="kbps_128" translatable="false">128k</string>
+    <string name="kbps_192" translatable="false">192k</string>
+    <string name="kbps_256" translatable="false">256k</string>
+
+    <string name="pdf_merge">One PDF</string>
+    <string name="pdf_merge_hint">All %1$d PDF files are merged into ONE PDF. Pages are stored as images, so text can no longer be selected.</string>
+    <string name="pdf_pages_hint">Every page becomes a separate image.</string>
+    <string name="pdf_compress_hint">Pages are saved again as JPEG images: the file gets smaller, but text can no longer be selected or searched.</string>
+    <string name="pdf_dpi">Resolution (DPI)</string>
+    <string name="dpi_72" translatable="false">72 dpi</string>
+    <string name="dpi_150" translatable="false">150 dpi</string>
+    <string name="dpi_300" translatable="false">300 dpi</string>
+
     <string name="save_to">Save to</string>
     <string name="dest_gallery">Gallery</string>
+    <string name="dest_media">Media folders</string>
     <string name="dest_folder">Folder</string>
-    <string name="dest_gallery_hint">Pictures/PixNexa</string>
     <string name="choose_folder">Choose a folder</string>
     <string name="change_folder">Change</string>
 
     <string name="convert">Convert %1$d</string>
+    <string name="compress">Compress %1$d</string>
     <string name="converting">Converting %1$d of %2$d…</string>
+    <string name="compressing">Compressing %1$d of %2$d…</string>
     <string name="cancel">Stop</string>
     <string name="share_all">Share all</string>
     <string name="share">Share</string>
     <string name="remove">Remove</string>
-    <string name="summary">%1$d converted · %2$s → %3$s</string>
+    <string name="summary">%1$d done · %2$s → %3$s</string>
     <string name="summary_failed">%1$d failed</string>
+    <string name="files_count">%1$d files</string>
 
     <string name="status_waiting">Waiting</string>
     <string name="status_converting">Converting…</string>
+    <string name="status_compressing">Compressing…</string>
+    <string name="status_combined">Added to %1$s</string>
     <string name="error_decode">This file could not be read as an image.</string>
-    <string name="error_memory">The image is too large for this device.</string>
+    <string name="error_memory">This file is too large for the memory of this device.</string>
     <string name="error_save">The converted file could not be saved.</string>
     <string name="error_permission">Storage permission is needed to save into the gallery.</string>
     <string name="error_folder">Choose a folder to save into first.</string>
+    <string name="error_media">This file could not be converted on this device.</string>
+    <string name="error_encoder">This phone has no encoder for this format or size.</string>
+    <string name="error_decoder">This phone cannot decode this file (unsupported codec).</string>
+    <string name="error_read">The file could not be read.</string>
+    <string name="error_pdf">This PDF could not be opened. It may be damaged.</string>
+    <string name="error_pdf_protected">This PDF is protected with a password.</string>
+    <string name="error_unknown">Something went wrong with this file.</string>
 
     <string name="settings">Settings</string>
     <string name="theme">Theme</string>
@@ -54,7 +123,7 @@
     <string name="about">About</string>
     <string name="version">Version %1$s</string>
     <string name="about_text">PixNexa Mobile is the Android edition of PixNexa. It is free and open source (MIT license).</string>
-    <string name="privacy_text">PixNexa has no internet permission. Your images never leave your phone and nothing is collected.</string>
+    <string name="privacy_text">PixNexa has no internet permission. Your files never leave your phone and nothing is collected.</string>
     <string name="website">Website and source code</string>
     <string name="close">Close</string>
 </resources>

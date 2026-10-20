@@ -2,7 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- No INTERNET permission: every image is processed on the device. -->
+    <!-- No INTERNET permission: every file is processed on the device. Media3 asks for the network
+         state (for streaming, which PixNexa never does), and no library may add internet access. -->
+    <uses-permission
+        android:name="android.permission.ACCESS_NETWORK_STATE"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.INTERNET"
+        tools:node="remove" />
 
     <!-- Only needed to save into the gallery on Android 9 and older. -->
     <uses-permission
@@ -29,22 +36,31 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- "Share → PixNexa" from the gallery or any other app. -->
+            <!-- "Share → PixNexa" from the gallery, a file manager or any other app. -->
             <intent-filter android:label="@string/share_target_label">
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="image/*" />
+                <data android:mimeType="video/*" />
+                <data android:mimeType="audio/*" />
+                <data android:mimeType="application/pdf" />
             </intent-filter>
             <intent-filter android:label="@string/share_target_label">
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="image/*" />
+                <data android:mimeType="video/*" />
+                <data android:mimeType="audio/*" />
+                <data android:mimeType="application/pdf" />
             </intent-filter>
             <!-- "Open with → PixNexa" -->
             <intent-filter android:label="@string/share_target_label">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="image/*" />
+                <data android:mimeType="video/*" />
+                <data android:mimeType="audio/*" />
+                <data android:mimeType="application/pdf" />
                 <data android:scheme="content" />
             </intent-filter>
         </activity>

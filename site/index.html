@@ -24,13 +24,13 @@
         <span>PixNexa</span>
       </a>
       <nav class="nav" aria-label="بخش‌ها">
-        <a href="#convert">تبدیل آنلاین</a>
+        <a href="#convert">تبدیل در مرورگر</a>
         <a href="#features">ویژگی‌ها</a>
         <a href="#download">دانلود</a>
         <a href="#install">راهنمای نصب</a>
         <a href="#faq">پرسش‌ها</a>
       </nav>
-      <a class="btn btn-small" href="#convert">تبدیل آنلاین</a>
+      <a class="btn btn-small" href="#convert">تبدیل در مرورگر</a>
     </div>
   </header>
 
@@ -50,7 +50,7 @@
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5l7.5-1v7H3zm0 13l7.5 1v-7H3zm8.5 1.1L21 21v-8.5h-9.5zm0-15.2v7.1H21V3z"/></svg>
               دانلود برای ویندوز
             </a>
-            <a class="btn btn-ghost" href="#convert">تبدیل آنلاین، بدون نصب</a>
+            <a class="btn btn-ghost" href="#convert">تبدیل در مرورگر، بدون نصب</a>
           </div>
           <p class="meta" data-version="android">اندروید ۷ و جدیدتر · فایل APK</p>
         </div>
@@ -78,34 +78,34 @@
     <section id="convert" class="section convert">
       <div class="wrap">
         <span class="tag">PixNexa Web</span>
-        <h2>همین‌جا در مرورگر تبدیل کنید</h2>
-        <p class="sub">بدون نصب و بدون آپلود: تصاویر داخل مرورگر خودتان تبدیل می‌شوند و هیچ فایلی به سرور فرستاده نمی‌شود.</p>
+        <h2>همین‌جا در مرورگر تبدیل و فشرده کنید</h2>
+        <p class="sub">تصویر، PDF، ویدیو، صدا، داده، زیرنویس و ZIP؛ بدون نصب و بدون آپلود. همهٔ پردازش داخل مرورگر خودتان انجام می‌شود و هیچ فایلی به سرور فرستاده نمی‌شود.</p>
 
         <div class="tool">
+          <div class="modes" id="mode" role="radiogroup" aria-label="نوع کار">
+            <button type="button" role="radio" data-mode="convert"><span aria-hidden="true">⇄</span> تبدیل فرمت</button>
+            <button type="button" role="radio" data-mode="compress"><span aria-hidden="true">⇣</span> کاهش حجم</button>
+          </div>
+
           <label class="drop" id="drop" tabindex="0">
-            <input type="file" id="picker" accept="image/*" multiple hidden>
+            <input type="file" id="picker" multiple hidden>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13v6H5v-6H3v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6zm-6 .17V3h-2v10.17l-3.59-3.58L6 11l6 6 6-6-1.41-1.41z" transform="rotate(180 12 12)"/></svg>
-            <b>تصاویر را اینجا رها کنید یا برای انتخاب کلیک کنید</b>
-            <small>چند تصویر با هم؛ PNG، JPEG، WebP، GIF، BMP و دیگر فرمت‌هایی که مرورگر بشناسد. چسباندن با Ctrl+V هم کار می‌کند.</small>
+            <b>فایل‌ها را اینجا رها کنید یا برای انتخاب کلیک کنید</b>
+            <small>هر نوع فایلی، چند فایل با هم. فقط گزینه‌هایی نشان داده می‌شوند که به فایل‌های شما می‌خورند. چسباندن با Ctrl+V هم کار می‌کند.</small>
           </label>
 
           <div class="controls">
-            <div class="field">
-              <span class="label">فرمت خروجی</span>
-              <div class="choice" role="radiogroup" id="formats">
-                <button type="button" role="radio" data-format="image/jpeg">JPEG</button>
-                <button type="button" role="radio" data-format="image/png">PNG</button>
-                <button type="button" role="radio" data-format="image/webp">WebP</button>
-              </div>
-            </div>
-            <div class="field" id="qualityField">
-              <span class="label">کیفیت <b id="qualityValue">٪۸۵</b></span>
-              <input type="range" id="quality" min="1" max="100" value="85" aria-label="کیفیت">
-            </div>
+            <fieldset class="panels" id="panels" hidden></fieldset>
             <p class="hint" id="hint"></p>
+            <div class="notice" id="notice" hidden>
+              <span id="noticeText"></span>
+              <span class="progress det"><i id="noticeBar"></i></span>
+            </div>
             <div class="actions">
               <button type="button" class="btn" id="convertBtn" disabled>تبدیل</button>
+              <button type="button" class="btn btn-ghost" id="cancelBtn" hidden>لغو</button>
               <button type="button" class="btn btn-ghost" id="zipBtn" hidden>دانلود همه (ZIP)</button>
+              <button type="button" class="btn btn-ghost" id="packBtn" hidden>ساخت ZIP از فایل‌ها</button>
               <button type="button" class="btn btn-ghost" id="clearBtn" hidden>پاک کردن</button>
             </div>
           </div>
@@ -113,6 +113,15 @@
           <p class="summary" id="summary" hidden></p>
           <ul class="files" id="files"></ul>
         </div>
+
+        <ul class="caps" aria-label="کارهایی که نسخهٔ وب انجام می‌دهد">
+          <li><b>تصویر</b><span>JPEG، PNG، WebP و AVIF (ورودی HEIC هم)؛ تغییر اندازه، سیاه‌وسفید، حجم هدف به کیلوبایت و چند تصویر در یک PDF</span></li>
+          <li><b>PDF</b><span>ادغام، جدا کردن صفحه‌ها، استخراج بازهٔ صفحه، تبدیل صفحه‌ها به PNG/JPEG، استخراج متن و کاهش حجم</span></li>
+          <li><b>ویدیو</b><span>MP4، WebM، MOV، MKV و GIF، جدا کردن صدا (MP3، M4A، WAV) و کاهش حجم تا 720p یا 480p</span></li>
+          <li><b>صدا</b><span>MP3، M4A، OGG، WAV و FLAC؛ کاهش حجم با بیت‌ریت کمتر</span></li>
+          <li><b>داده و زیرنویس</b><span>JSON، YAML، CSV، XML و TOML به یکدیگر؛ SRT، WebVTT و ASS به یکدیگر</span></li>
+          <li><b>فایل فشرده</b><span>باز کردن ZIP، TAR و GZ؛ ساخت ZIP از هر فایلی و دانلود همهٔ نتیجه‌ها در یک ZIP</span></li>
+        </ul>
       </div>
     </section>
 
@@ -185,8 +194,8 @@
           <article class="product">
             <span class="tag">مرورگر · بدون نصب</span>
             <h3>PixNexa Web</h3>
-            <p>همین صفحه. تبدیل گروهی PNG، JPEG و WebP داخل خود مرورگر، روی هر دستگاهی، بدون آپلود.</p>
-            <a class="link" href="#convert">شروع تبدیل ←</a>
+            <p>همین صفحه، روی هر دستگاهی و بدون نصب: تبدیل و کاهش حجم تصویر (تا AVIF و PDF)، ادغام و جدا کردن و فشرده‌سازی PDF، تبدیل ویدیو و صدا، داده، زیرنویس و ZIP؛ همه داخل مرورگر و بدون آپلود.</p>
+            <a class="link" href="#convert">شروع کار ←</a>
           </article>
         </div>
       </div>
@@ -274,16 +283,24 @@
           <p>بله. PixNexa کاملاً رایگان، بدون تبلیغ و متن‌باز (مجوز MIT) است.</p>
         </details>
         <details>
-          <summary>تصاویر من جایی آپلود می‌شوند؟</summary>
-          <p>خیر. نسخهٔ اندروید حتی مجوز دسترسی به اینترنت را ندارد؛ تمام پردازش روی خود دستگاه انجام می‌شود و هیچ داده‌ای جمع‌آوری نمی‌شود.</p>
+          <summary>فایل‌های من جایی آپلود می‌شوند؟</summary>
+          <p>خیر. نسخهٔ اندروید حتی مجوز دسترسی به اینترنت را ندارد؛ تمام پردازش روی خود دستگاه انجام می‌شود و هیچ داده‌ای جمع‌آوری نمی‌شود. نسخهٔ وب هم فایل‌ها را فقط داخل مرورگر شما پردازش می‌کند؛ تنها چیزی که از اینترنت گرفته می‌شود خود ابزارهاست (مثلاً موتور ویدیو از jsDelivr)، نه فایل‌های شما.</p>
+        </details>
+        <details>
+          <summary>نسخهٔ وب چه کارهایی انجام می‌دهد؟</summary>
+          <p>تصویر را به JPEG، PNG، WebP، AVIF یا یک فایل PDF تبدیل می‌کند (HEIC آیفون را هم می‌خواند)، اندازه را کوچک می‌کند و می‌تواند حجم را به عدد دلخواه به کیلوبایت برساند. PDFها را ادغام یا صفحه‌به‌صفحه جدا می‌کند، به تصویر یا متن تبدیل و کم‌حجم می‌کند. ویدیو و صدا را بین MP4، WebM، MOV، MKV، GIF، MP3، M4A، OGG، WAV و FLAC تبدیل یا فشرده می‌کند. JSON، YAML، CSV، XML و TOML و زیرنویس‌های SRT، WebVTT و ASS را به هم تبدیل می‌کند و ZIP، TAR و GZ را باز می‌کند یا از فایل‌ها ZIP می‌سازد.</p>
+        </details>
+        <details>
+          <summary>چرا ویدیو در نسخهٔ وب کند است؟</summary>
+          <p>نسخهٔ وب از ffmpeg.wasm استفاده می‌کند که داخل مرورگر و روی یک هستهٔ پردازنده اجرا می‌شود، پس چند برابر کندتر از ffmpeg معمولی است و حافظهٔ مرورگر هم محدود است. بار اول حدود ۳۱ مگابایت موتور ویدیو دانلود می‌شود (دفعه‌های بعد از حافظهٔ مرورگر خوانده می‌شود). برای ویدیوهای طولانی یا بزرگ‌تر از چند صد مگابایت، PixNexa Desktop یا Mobile مناسب‌تر است.</p>
         </details>
         <details>
           <summary>چه فرمت‌هایی پشتیبانی می‌شود؟</summary>
-          <p>نسخهٔ اندروید هر تصویری را که گوشی بتواند باز کند (از جمله HEIC در اندروید ۹ به بعد) می‌خواند و به PNG، JPEG یا WebP تبدیل می‌کند. نسخهٔ ویندوز علاوه بر این‌ها BMP، GIF، TIFF و ICO هم می‌سازد.</p>
+          <p>نسخهٔ اندروید هر تصویری را که گوشی بتواند باز کند (از جمله HEIC در اندروید ۹ به بعد) می‌خواند و به PNG، JPEG یا WebP تبدیل می‌کند. نسخهٔ ویندوز علاوه بر این‌ها BMP، GIF، TIFF و ICO هم می‌سازد. نسخهٔ وب علاوه بر تصویر (از جمله AVIF و PDF) با PDF، ویدیو، صدا، داده، زیرنویس و ZIP هم کار می‌کند؛ پرسش «نسخهٔ وب چه کارهایی انجام می‌دهد؟» را ببینید.</p>
         </details>
         <details>
           <summary>کدام فرمت را انتخاب کنم؟</summary>
-          <p><b>WebP</b> معمولاً کم‌حجم‌ترین فایل را با کیفیت خوب می‌دهد. <b>JPEG</b> برای عکس‌ها و سازگاری با همه‌جا مناسب است. <b>PNG</b> بدون افت کیفیت است و برای اسکرین‌شات، لوگو و تصاویر شفاف بهترین است.</p>
+          <p><b>WebP</b> معمولاً کم‌حجم‌ترین فایل را با کیفیت خوب می‌دهد و <b>AVIF</b> از آن هم کم‌حجم‌تر است، ولی ساختنش کندتر است و برنامه‌های قدیمی بازش نمی‌کنند. <b>JPEG</b> برای عکس‌ها و سازگاری با همه‌جا مناسب است. <b>PNG</b> بدون افت کیفیت است و برای اسکرین‌شات، لوگو و تصاویر شفاف بهترین است.</p>
         </details>
         <details>
           <summary>چرا در گوگل‌پلی نیست؟</summary>

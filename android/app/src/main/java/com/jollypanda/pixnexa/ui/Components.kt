@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Icon
+import com.jollypanda.pixnexa.OutputFile
 import com.jollypanda.pixnexa.R
 
 const val WEBSITE = "https://usef-farahmand.github.io/image-format-converter/"
@@ -54,10 +55,26 @@ fun AppLogo(size: Dp, modifier: Modifier = Modifier) {
     }
 }
 
-/** A row of segmented buttons for picking one of a few values. */
+/** A row of segmented buttons for picking one of a few values; labels are string resources. */
 @Composable
 fun <T> ChoiceRow(
     options: List<Triple<T, Int, ImageVector?>>,
+    selected: T,
+    onSelect: (T) -> Unit,
+    enabled: Boolean = true,
+) {
+    LabelChoiceRow(
+        options = options.map { (value, label, icon) -> Triple(value, stringResource(label), icon) },
+        selected = selected,
+        onSelect = onSelect,
+        enabled = enabled,
+    )
+}
+
+/** The same row with ready-made label texts. */
+@Composable
+fun <T> LabelChoiceRow(
+    options: List<Triple<T, String, ImageVector?>>,
     selected: T,
     onSelect: (T) -> Unit,
     enabled: Boolean = true,
@@ -87,7 +104,7 @@ fun <T> ChoiceRow(
                     )
                 },
             ) {
-                Text(stringResource(label), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(label, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
     }
@@ -96,18 +113,28 @@ fun <T> ChoiceRow(
 fun formatSize(context: Context, bytes: Long): String =
     if (bytes < 0) "—" else Formatter.formatShortFileSize(context, bytes)
 
-fun shareImages(context: Context, uris: List<Uri>) {
-    if (uris.isEmpty()) return
+/** Shares finished files through the Android Share menu, with the narrowest MIME type that fits all of them. */
+fun shareFiles(context: Context, outputs: List<OutputFile>) {
+    if (outputs.isEmpty()) return
+    val uris = outputs.map { it.shareUri }
     val intent = if (uris.size == 1) {
         Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_STREAM, uris[0])
     } else {
         Intent(Intent.ACTION_SEND_MULTIPLE).putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(uris))
     }
-    intent.type = "image/*"
+    intent.type = commonMimeType(outputs.map { it.mimeType })
     // ClipData carries the read grant to whichever app the user picks.
     intent.clipData = ClipData.newRawUri(null, uris[0]).apply { uris.drop(1).forEach { addItem(ClipData.Item(it)) } }
     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     context.startActivity(Intent.createChooser(intent, null))
+}
+
+// One type when all files share it, "image/(any)" for mixed images, "(any)/(any)" for mixed kinds.
+private fun commonMimeType(types: List<String>): String {
+    val distinct = types.distinct()
+    if (distinct.size == 1) return distinct[0]
+    val topLevel = distinct.map { it.substringBefore('/') }.distinct()
+    return if (topLevel.size == 1) "${topLevel[0]}/*" else "*/*"
 }
 
 fun openWebsite(context: Context) {

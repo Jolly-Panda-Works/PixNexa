@@ -93,4 +93,14 @@ dependencies {
     implementation("androidx.documentfile:documentfile:1.0.1")
     implementation("androidx.exifinterface:exifinterface:1.3.7")
     implementation("io.coil-kt:coil-compose:2.7.0")
+    // Video thumbnails in the list (MediaMetadataRetriever frame decoder, same Coil release).
+    implementation("io.coil-kt:coil-video:2.7.0")
+
+    // Video and audio conversion/compression with the phone's hardware codecs (Apache-2.0, no native code).
+    val media3 = "1.4.1"
+    implementation("androidx.media3:media3-transformer:$media3")
+    implementation("androidx.media3:media3-effect:$media3")
+    implementation("androidx.media3:media3-common:$media3")
+    // androidx.annotation.OptIn for Media3's @UnstableApi (already pulled in by androidx.core; declared so it is on the compile classpath).
+    implementation("androidx.annotation:annotation-experimental:1.4.1")
 }

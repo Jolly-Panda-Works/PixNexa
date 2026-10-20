@@ -1,42 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="share_target_label">تبدیل با PixNexa</string>
-    <string name="tagline">تبدیل PNG، JPEG و WebP؛ آفلاین و امن.</string>
+    <string name="tagline">تبدیل و فشرده‌سازی تصویر، ویدیو، صدا و PDF؛ آفلاین و امن.</string>
 
-    <string name="select_images">انتخاب تصاویر</string>
-    <string name="add_more">افزودن تصویر</string>
+    <string name="select_media">عکس‌ها و ویدیوها</string>
+    <string name="select_files">فایل‌ها (صدا، PDF و…)</string>
+    <string name="add_more">افزودن</string>
     <string name="clear_all">پاک کردن فهرست</string>
-    <string name="empty_title">تصاویری را برای تبدیل انتخاب کنید</string>
-    <string name="empty_body">یک یا چند تصویر را هم‌زمان انتخاب کنید. همهٔ تبدیل‌ها روی گوشی خودتان انجام می‌شود و چیزی آپلود نمی‌شود.</string>
+    <string name="empty_title">فایل‌هایی را برای تبدیل یا فشرده‌سازی انتخاب کنید</string>
+    <string name="empty_body">عکس، ویدیو، موسیقی و PDF؛ یکی یا چندتا با هم. همه‌چیز روی گوشی خودتان انجام می‌شود و چیزی آپلود نمی‌شود.</string>
     <string name="offline_badge">کاملاً آفلاین</string>
 
-    <string name="format_label">فرمت خروجی</string>
+    <string name="kind_image">تصویر</string>
+    <string name="kind_video">ویدیو</string>
+    <string name="kind_audio">صدا</string>
+    <string name="kind_images_count">تصویرها (%1$d)</string>
+    <string name="kind_videos_count">ویدیوها (%1$d)</string>
+    <string name="kind_audio_count">فایل‌های صوتی (%1$d)</string>
+    <string name="kind_pdfs_count">فایل‌های PDF (%1$d)</string>
+
+    <string name="mode_convert">تبدیل</string>
+    <string name="mode_compress">فشرده‌سازی</string>
+
     <string name="quality_label">کیفیت</string>
     <string name="quality_value">٪%1$d</string>
     <string name="quality_lossless">PNG بدون افت کیفیت است و تنظیم کیفیت ندارد.</string>
+    <string name="images_to_pdf_hint">همهٔ %1$d تصویر در «یک» فایل PDF کنار هم قرار می‌گیرند (هر تصویر یک صفحه).</string>
+    <string name="page_size">اندازهٔ صفحه</string>
+    <string name="page_fit">هم‌اندازهٔ تصویر</string>
+    <string name="compress_image_hint">هر تصویر فرمت خودش را نگه می‌دارد (JPEG، PNG یا WebP)؛ HEIC، AVIF، GIF و فرمت‌های دیگر به‌صورت JPEG ذخیره می‌شوند. PNG بدون افت کیفیت است و فقط با کوچک کردن ابعاد، حجمش کم می‌شود.</string>
+    <string name="resize_label">حداکثر اندازه (ضلع بلندتر)</string>
+    <string name="size_original">اصلی</string>
+    <string name="target_size">حجم هدف</string>
+    <string name="target_size_hint">بهترین کیفیتی که در این حجم جا شود. خالی یعنی خاموش.</string>
+    <string name="target_off">خاموش</string>
+
+    <string name="video_audio_only">فقط صدا (M4A)</string>
+    <string name="video_extract_hint">فقط صدای ویدیو نگه داشته می‌شود؛ به‌صورت AAC در یک فایل M4A.</string>
+    <string name="resolution">وضوح تصویر</string>
+    <string name="compress_video_hint">ویدیو با بیت‌ریت کمتر دوباره به MP4 (H.264) رمزگذاری می‌شود. ابعاد ویدیو هرگز بزرگ‌تر نمی‌شود.</string>
+    <string name="video_quality">کیفیت ویدیو</string>
+    <string name="quality_high">بالا</string>
+    <string name="quality_medium">متوسط</string>
+    <string name="quality_small">کم‌حجم‌ترین</string>
+
+    <string name="audio_hint">خروجی M4A (AAC) است. ساختن MP3 ممکن نیست، چون اندروید رمزگذار داخلی MP3 ندارد.</string>
+    <string name="audio_bitrate">بیت‌ریت</string>
+
+    <string name="pdf_merge">یک PDF</string>
+    <string name="pdf_merge_hint">همهٔ %1$d فایل PDF در «یک» PDF ادغام می‌شوند. صفحه‌ها به‌صورت تصویر ذخیره می‌شوند و دیگر نمی‌توان متن را انتخاب کرد.</string>
+    <string name="pdf_pages_hint">هر صفحه یک تصویر جداگانه می‌شود.</string>
+    <string name="pdf_compress_hint">صفحه‌ها دوباره به‌صورت تصویر JPEG ذخیره می‌شوند: حجم فایل کم می‌شود، اما دیگر نمی‌توان متن را انتخاب یا جست‌وجو کرد.</string>
+    <string name="pdf_dpi">وضوح (DPI)</string>
+
     <string name="save_to">محل ذخیره</string>
     <string name="dest_gallery">گالری</string>
+    <string name="dest_media">پوشه‌های رسانه</string>
     <string name="dest_folder">پوشه</string>
-    <string name="dest_gallery_hint">Pictures/PixNexa</string>
     <string name="choose_folder">انتخاب پوشه</string>
     <string name="change_folder">تغییر</string>
 
-    <string name="convert">تبدیل %1$d تصویر</string>
+    <string name="convert">تبدیل %1$d فایل</string>
+    <string name="compress">فشرده‌سازی %1$d فایل</string>
     <string name="converting">در حال تبدیل %1$d از %2$d…</string>
+    <string name="compressing">در حال فشرده‌سازی %1$d از %2$d…</string>
     <string name="cancel">توقف</string>
     <string name="share_all">اشتراک‌گذاری همه</string>
     <string name="share">اشتراک‌گذاری</string>
     <string name="remove">حذف</string>
-    <string name="summary">%1$d تصویر تبدیل شد · %2$s ← %3$s</string>
+    <string name="summary">%1$d فایل انجام شد · %2$s ← %3$s</string>
     <string name="summary_failed">%1$d ناموفق</string>
+    <string name="files_count">%1$d فایل</string>
 
     <string name="status_waiting">در انتظار</string>
     <string name="status_converting">در حال تبدیل…</string>
+    <string name="status_compressing">در حال فشرده‌سازی…</string>
+    <string name="status_combined">به %1$s اضافه شد</string>
     <string name="error_decode">این فایل به‌عنوان تصویر خوانده نشد.</string>
-    <string name="error_memory">این تصویر برای حافظهٔ این دستگاه خیلی بزرگ است.</string>
+    <string name="error_memory">این فایل برای حافظهٔ این دستگاه خیلی بزرگ است.</string>
     <string name="error_save">فایل تبدیل‌شده ذخیره نشد.</string>
     <string name="error_permission">برای ذخیره در گالری، اجازهٔ دسترسی به حافظه لازم است.</string>
     <string name="error_folder">ابتدا یک پوشه برای ذخیره انتخاب کنید.</string>
+    <string name="error_media">این فایل روی این دستگاه تبدیل نشد.</string>
+    <string name="error_encoder">این گوشی رمزگذاری برای این فرمت یا این اندازه ندارد.</string>
+    <string name="error_decoder">این گوشی نمی‌تواند این فایل را رمزگشایی کند (کدک پشتیبانی نمی‌شود).</string>
+    <string name="error_read">فایل خوانده نشد.</string>
+    <string name="error_pdf">این PDF باز نشد؛ شاید آسیب دیده باشد.</string>
+    <string name="error_pdf_protected">این PDF با رمز عبور محافظت شده است.</string>
+    <string name="error_unknown">در پردازش این فایل مشکلی پیش آمد.</string>
 
     <string name="settings">تنظیمات</string>
     <string name="theme">پوسته</string>
@@ -48,7 +99,7 @@
     <string name="about">دربارهٔ برنامه</string>
     <string name="version">نسخهٔ %1$s</string>
     <string name="about_text">PixNexa Mobile نسخهٔ اندروید PixNexa است؛ رایگان و متن‌باز (مجوز MIT).</string>
-    <string name="privacy_text">PixNexa هیچ دسترسی‌ای به اینترنت ندارد. تصاویر شما هرگز از گوشی خارج نمی‌شوند و هیچ داده‌ای جمع‌آوری نمی‌شود.</string>
+    <string name="privacy_text">PixNexa هیچ دسترسی‌ای به اینترنت ندارد. فایل‌های شما هرگز از گوشی خارج نمی‌شوند و هیچ داده‌ای جمع‌آوری نمی‌شود.</string>
     <string name="website">وب‌سایت و کد منبع</string>
     <string name="close">بستن</string>
 </resources>

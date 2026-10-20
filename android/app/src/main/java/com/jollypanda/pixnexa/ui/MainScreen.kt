@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,42 +17,45 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.AddPhotoAlternate
-import androidx.compose.material.icons.rounded.AutoAwesome
+import androidx.compose.material.icons.rounded.AttachFile
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.CloudOff
 import androidx.compose.material.icons.rounded.DeleteSweep
-import androidx.compose.material.icons.rounded.Folder
-import androidx.compose.material.icons.rounded.PhotoLibrary
+import androidx.compose.material.icons.rounded.Image
+import androidx.compose.material.icons.rounded.Movie
+import androidx.compose.material.icons.rounded.MusicNote
+import androidx.compose.material.icons.rounded.PictureAsPdf
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -64,6 +68,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -77,15 +83,21 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.os.ConfigurationCompat
 import coil.compose.AsyncImage
+import coil.decode.VideoFrameDecoder
 import coil.request.ImageRequest
+import com.jollypanda.pixnexa.CombinedResult
 import com.jollypanda.pixnexa.ConvertViewModel
 import com.jollypanda.pixnexa.Destination
-import com.jollypanda.pixnexa.ImageItem
+import com.jollypanda.pixnexa.FileItem
 import com.jollypanda.pixnexa.ItemStatus
-import com.jollypanda.pixnexa.OutputFormat
+import com.jollypanda.pixnexa.MediaKind
+import com.jollypanda.pixnexa.Mode
 import com.jollypanda.pixnexa.R
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
+
+/** MIME types offered by the "Files" picker (the system document picker). */
+private val DOCUMENT_TYPES = arrayOf("image/*", "video/*", "audio/*", "application/pdf")
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -94,13 +106,18 @@ fun MainScreen(vm: ConvertViewModel) {
     val scope = rememberCoroutineScope()
     val snackbar = remember { SnackbarHostState() }
     var showSettings by rememberSaveable { mutableStateOf(false) }
+    var showAddMenu by remember { mutableStateOf(false) }
 
-    val imagePicker = rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia()) {
-        vm.addImages(it)
+    val mediaPicker = rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia()) {
+        vm.addFiles(it)
     }
-    val pickImages: () -> Unit = {
-        imagePicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    val pickMedia: () -> Unit = {
+        mediaPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
     }
+    val documentPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) {
+        vm.addFiles(it)
+    }
+    val pickDocuments: () -> Unit = { documentPicker.launch(DOCUMENT_TYPES) }
     val folderPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
         if (uri != null) vm.updateFolder(uri)
     }
@@ -142,23 +159,45 @@ fun MainScreen(vm: ConvertViewModel) {
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
             )
         },
-        bottomBar = { ControlPanel(vm, onPickFolder = pickFolder, onConvert = convert) },
+        bottomBar = {
+            if (vm.items.isNotEmpty()) ControlPanel(vm, onPickFolder = pickFolder, onStart = convert)
+        },
         floatingActionButton = {
             if (vm.items.isNotEmpty() && !vm.running) {
-                ExtendedFloatingActionButton(
-                    onClick = pickImages,
-                    icon = { Icon(Icons.Rounded.AddPhotoAlternate, contentDescription = null) },
-                    text = { Text(stringResource(R.string.add_more)) },
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                )
+                Box {
+                    ExtendedFloatingActionButton(
+                        onClick = { showAddMenu = true },
+                        icon = { Icon(Icons.Rounded.Add, contentDescription = null) },
+                        text = { Text(stringResource(R.string.add_more)) },
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                    DropdownMenu(expanded = showAddMenu, onDismissRequest = { showAddMenu = false }) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.select_media)) },
+                            leadingIcon = { Icon(Icons.Rounded.AddPhotoAlternate, contentDescription = null) },
+                            onClick = {
+                                showAddMenu = false
+                                pickMedia()
+                            },
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.select_files)) },
+                            leadingIcon = { Icon(Icons.Rounded.AttachFile, contentDescription = null) },
+                            onClick = {
+                                showAddMenu = false
+                                pickDocuments()
+                            },
+                        )
+                    }
+                }
             }
         },
         snackbarHost = { SnackbarHost(snackbar) },
         containerColor = MaterialTheme.colorScheme.background,
     ) { padding ->
         if (vm.items.isEmpty()) {
-            EmptyState(Modifier.padding(padding), onPick = pickImages)
+            EmptyState(Modifier.padding(padding), onPickMedia = pickMedia, onPickFiles = pickDocuments)
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
@@ -170,15 +209,19 @@ fun MainScreen(vm: ConvertViewModel) {
                 ),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                if (!vm.running && vm.doneItems.isNotEmpty()) {
+                if (!vm.running && (vm.doneItems.isNotEmpty() || vm.combinedResults.isNotEmpty())) {
                     item(key = "summary") { SummaryCard(vm) }
+                }
+                items(vm.combinedResults, key = { "combined-" + it.name }) { result ->
+                    CombinedCard(result, onShare = { shareFiles(context, listOf(result.output)) })
                 }
                 items(vm.items, key = { it.id }) { item ->
                     ItemRow(
                         item = item,
+                        compress = vm.mode == Mode.COMPRESS,
                         enabled = !vm.running,
                         onRemove = { vm.remove(item) },
-                        onShare = { (item.status as? ItemStatus.Done)?.let { shareImages(context, listOf(it.shareUri)) } },
+                        onShare = { (item.status as? ItemStatus.Done)?.let { shareFiles(context, it.outputs) } },
                     )
                 }
             }
@@ -189,7 +232,7 @@ fun MainScreen(vm: ConvertViewModel) {
 }
 
 @Composable
-private fun EmptyState(modifier: Modifier, onPick: () -> Unit) {
+private fun EmptyState(modifier: Modifier, onPickMedia: () -> Unit, onPickFiles: () -> Unit) {
     Column(
         modifier
             .fillMaxSize()
@@ -213,11 +256,31 @@ private fun EmptyState(modifier: Modifier, onPick: () -> Unit) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
         )
+        Spacer(Modifier.height(16.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+            listOf(
+                Icons.Rounded.Image to R.string.kind_image,
+                Icons.Rounded.Movie to R.string.kind_video,
+                Icons.Rounded.MusicNote to R.string.kind_audio,
+                Icons.Rounded.PictureAsPdf to R.string.kind_pdf,
+            ).forEach { (icon, label) ->
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                    Text(stringResource(label), style = MaterialTheme.typography.labelSmall)
+                }
+            }
+        }
         Spacer(Modifier.height(24.dp))
-        Button(onClick = onPick, modifier = Modifier.height(52.dp)) {
+        Button(onClick = onPickMedia, modifier = Modifier.height(52.dp)) {
             Icon(Icons.Rounded.AddPhotoAlternate, contentDescription = null)
             Spacer(Modifier.width(8.dp))
-            Text(stringResource(R.string.select_images), style = MaterialTheme.typography.titleSmall)
+            Text(stringResource(R.string.select_media), style = MaterialTheme.typography.titleSmall)
+        }
+        Spacer(Modifier.height(10.dp))
+        OutlinedButton(onClick = onPickFiles, modifier = Modifier.height(48.dp)) {
+            Icon(Icons.Rounded.AttachFile, contentDescription = null)
+            Spacer(Modifier.width(8.dp))
+            Text(stringResource(R.string.select_files))
         }
         Spacer(Modifier.height(16.dp))
         Row(
@@ -234,146 +297,64 @@ private fun EmptyState(modifier: Modifier, onPick: () -> Unit) {
     }
 }
 
+fun kindIcon(kind: MediaKind): ImageVector = when (kind) {
+    MediaKind.IMAGE -> Icons.Rounded.Image
+    MediaKind.VIDEO -> Icons.Rounded.Movie
+    MediaKind.AUDIO -> Icons.Rounded.MusicNote
+    MediaKind.PDF -> Icons.Rounded.PictureAsPdf
+}
+
+/** Thumbnail for images and videos (first frame), a type icon for audio and PDF. */
 @Composable
-private fun ControlPanel(vm: ConvertViewModel, onPickFolder: () -> Unit, onConvert: () -> Unit) {
+private fun Thumbnail(item: FileItem) {
     val context = LocalContext.current
-    Surface(
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-        shadowElevation = 8.dp,
+    Box(
+        Modifier
+            .size(56.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant),
+        contentAlignment = Alignment.Center,
     ) {
-        Column(
-            Modifier
-                .navigationBarsPadding()
-                .padding(horizontal = 16.dp, vertical = 14.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            SectionLabel(stringResource(R.string.format_label))
-            ChoiceRow(
-                options = OutputFormat.entries.map { Triple(it, formatLabel(it), null) },
-                selected = vm.format,
-                onSelect = vm::updateFormat,
-                enabled = !vm.running,
-            )
-
-            if (vm.format.lossy) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    SectionLabel(stringResource(R.string.quality_label), Modifier.weight(1f))
-                    Text(
-                        stringResource(R.string.quality_value, vm.quality),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Bold,
-                    )
+        when (item.kind) {
+            MediaKind.IMAGE, MediaKind.VIDEO -> {
+                val request = remember(item.uri, item.kind) {
+                    ImageRequest.Builder(context)
+                        .data(item.uri)
+                        .size(192)
+                        .apply { if (item.kind == MediaKind.VIDEO) decoderFactory(VideoFrameDecoder.Factory()) }
+                        .crossfade(true)
+                        .build()
                 }
-                Slider(
-                    value = vm.quality.toFloat(),
-                    onValueChange = { vm.updateQuality(it.roundToInt()) },
-                    onValueChangeFinished = vm::saveQuality,
-                    valueRange = 1f..100f,
-                    enabled = !vm.running,
-                    modifier = Modifier.height(32.dp),
+                AsyncImage(
+                    model = request,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize(),
                 )
-            } else {
-                Text(
-                    stringResource(R.string.quality_lossless),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(vertical = 6.dp),
-                )
-            }
-
-            SectionLabel(stringResource(R.string.save_to))
-            ChoiceRow(
-                options = listOf(
-                    Triple(Destination.GALLERY, R.string.dest_gallery, Icons.Rounded.PhotoLibrary),
-                    Triple(Destination.FOLDER, R.string.dest_folder, Icons.Rounded.Folder),
-                ),
-                selected = vm.destination,
-                onSelect = { if (it == Destination.FOLDER && vm.folder == null) onPickFolder() else vm.updateDestination(it) },
-                enabled = !vm.running,
-            )
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(40.dp)) {
-                val gallery = vm.destination == Destination.GALLERY
-                Text(
-                    if (gallery) stringResource(R.string.dest_gallery_hint)
-                    else vm.folderName ?: stringResource(R.string.choose_folder),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f),
-                )
-                if (!gallery) {
-                    TextButton(onClick = onPickFolder, enabled = !vm.running) {
-                        Text(stringResource(if (vm.folder == null) R.string.choose_folder else R.string.change_folder))
-                    }
-                }
-            }
-
-            if (vm.running) {
-                val total = vm.items.size.coerceAtLeast(1)
-                LinearProgressIndicator(
-                    progress = { vm.processedCount.toFloat() / total },
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        stringResource(R.string.converting, (vm.processedCount + 1).coerceAtMost(total), total),
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.weight(1f),
-                    )
-                    OutlinedButton(onClick = vm::stop) { Text(stringResource(R.string.cancel)) }
-                }
-            } else {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    val done = vm.doneItems
-                    if (done.isNotEmpty()) {
-                        FilledTonalButton(
-                            onClick = { shareImages(context, done.mapNotNull { (it.status as? ItemStatus.Done)?.shareUri }) },
-                            modifier = Modifier.height(52.dp),
-                        ) {
-                            Icon(Icons.Rounded.Share, contentDescription = null)
-                            Spacer(Modifier.width(8.dp))
-                            Text(stringResource(R.string.share_all))
-                        }
-                    }
-                    Button(
-                        onClick = onConvert,
-                        enabled = vm.items.isNotEmpty(),
+                if (item.kind == MediaKind.VIDEO) {
+                    Icon(
+                        Icons.Rounded.PlayArrow,
+                        contentDescription = null,
+                        tint = Color.White,
                         modifier = Modifier
-                            .weight(1f)
-                            .height(52.dp),
-                    ) {
-                        Icon(Icons.Rounded.AutoAwesome, contentDescription = null)
-                        Spacer(Modifier.width(8.dp))
-                        Text(stringResource(R.string.convert, vm.items.size), style = MaterialTheme.typography.titleSmall)
-                    }
+                            .size(22.dp)
+                            .clip(CircleShape)
+                            .background(Color.Black.copy(alpha = 0.45f)),
+                    )
                 }
             }
+            MediaKind.AUDIO, MediaKind.PDF -> Icon(
+                kindIcon(item.kind),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(28.dp),
+            )
         }
     }
 }
 
 @Composable
-private fun SectionLabel(text: String, modifier: Modifier = Modifier) {
-    Text(
-        text,
-        style = MaterialTheme.typography.labelMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = modifier,
-    )
-}
-
-/** ChoiceRow takes string resources; the format names themselves are not translated. */
-private fun formatLabel(format: OutputFormat): Int = when (format) {
-    OutputFormat.JPEG -> R.string.format_jpeg
-    OutputFormat.PNG -> R.string.format_png
-    OutputFormat.WEBP -> R.string.format_webp
-}
-
-@Composable
-private fun ItemRow(item: ImageItem, enabled: Boolean, onRemove: () -> Unit, onShare: () -> Unit) {
+private fun ItemRow(item: FileItem, compress: Boolean, enabled: Boolean, onRemove: () -> Unit, onShare: () -> Unit) {
     val context = LocalContext.current
     Surface(
         shape = RoundedCornerShape(16.dp),
@@ -381,15 +362,7 @@ private fun ItemRow(item: ImageItem, enabled: Boolean, onRemove: () -> Unit, onS
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
     ) {
         Row(Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
-            AsyncImage(
-                model = ImageRequest.Builder(context).data(item.uri).size(192).crossfade(true).build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(56.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
-            )
+            Thumbnail(item)
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Text(
@@ -406,19 +379,38 @@ private fun ItemRow(item: ImageItem, enabled: Boolean, onRemove: () -> Unit, onS
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    ItemStatus.Converting -> {
+                    is ItemStatus.Working -> {
                         Text(
-                            stringResource(R.string.status_converting),
+                            stringResource(if (compress) R.string.status_compressing else R.string.status_converting),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.primary,
                         )
-                        LinearProgressIndicator(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 6.dp),
-                        )
+                        val progressModifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 6.dp)
+                        if (status.progress >= 0f) {
+                            LinearProgressIndicator(progress = { status.progress.coerceIn(0f, 1f) }, modifier = progressModifier)
+                        } else {
+                            LinearProgressIndicator(modifier = progressModifier)
+                        }
                     }
-                    is ItemStatus.Done -> SizeChange(item.size, status.outputSize)
+                    is ItemStatus.Done -> {
+                        SizeChange(item.size, status.outputSize)
+                        if (status.outputs.size > 1) {
+                            Text(
+                                stringResource(R.string.files_count, status.outputs.size),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                    is ItemStatus.Combined -> Text(
+                        stringResource(R.string.status_combined, status.resultName),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = successColor,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
                     is ItemStatus.Failed -> Text(
                         stringResource(status.message),
                         style = MaterialTheme.typography.bodySmall,
@@ -430,10 +422,47 @@ private fun ItemRow(item: ImageItem, enabled: Boolean, onRemove: () -> Unit, onS
                 is ItemStatus.Done -> IconButton(onClick = onShare) {
                     Icon(Icons.Rounded.Share, contentDescription = stringResource(R.string.share))
                 }
-                ItemStatus.Converting -> Spacer(Modifier.width(48.dp))
+                is ItemStatus.Working -> Spacer(Modifier.width(48.dp))
                 else -> IconButton(onClick = onRemove, enabled = enabled) {
                     Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.remove))
                 }
+            }
+        }
+    }
+}
+
+/** A file made from several inputs (images → one PDF, or merged PDFs). */
+@Composable
+private fun CombinedCard(result: CombinedResult, onShare: () -> Unit) {
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+    ) {
+        Row(Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                Modifier
+                    .size(56.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(Icons.Rounded.PictureAsPdf, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+            }
+            Spacer(Modifier.width(12.dp))
+            Column(Modifier.weight(1f)) {
+                Text(
+                    result.name,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Spacer(Modifier.height(2.dp))
+                SizeChange(result.inputSize, result.outputSize)
+            }
+            IconButton(onClick = onShare) {
+                Icon(Icons.Rounded.Share, contentDescription = stringResource(R.string.share))
             }
         }
     }
@@ -473,10 +502,12 @@ private fun SizeChange(before: Long, after: Long) {
 private fun SummaryCard(vm: ConvertViewModel) {
     val context = LocalContext.current
     val done = vm.doneItems
+    val combined = vm.combinedResults
+    val combinedInputs = vm.items.count { it.status is ItemStatus.Combined }
     val failed = vm.items.count { it.status is ItemStatus.Failed }
     val known = done.filter { it.size >= 0 }
-    val before = known.sumOf { it.size }
-    val after = known.sumOf { (it.status as ItemStatus.Done).outputSize }
+    val before = known.sumOf { it.size } + combined.sumOf { it.inputSize }
+    val after = known.sumOf { (it.status as ItemStatus.Done).outputSize } + combined.sumOf { it.outputSize }
     Surface(
         shape = RoundedCornerShape(16.dp),
         color = MaterialTheme.colorScheme.primaryContainer,
@@ -487,7 +518,12 @@ private fun SummaryCard(vm: ConvertViewModel) {
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Text(
-                    stringResource(R.string.summary, done.size, formatSize(context, before), formatSize(context, after)),
+                    stringResource(
+                        R.string.summary,
+                        done.size + combinedInputs,
+                        formatSize(context, before),
+                        formatSize(context, after),
+                    ),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium,
                 )
