@@ -5,7 +5,7 @@ The default version lives in the VERSION file. For a build, this script decides 
 writes it to
 
   _build_version.py   read by app_common    -> the app header and Settings > About
-  version_info.txt    PyInstaller version file -> the Windows file properties of ImageFormatConverter.exe
+  version_info.txt    PyInstaller version file -> the Windows file properties of PixNexa.exe
 
 and prints it, so the installer (Inno Setup /DMyAppVersion=...) and the GitHub release use the very same string.
 
@@ -52,12 +52,12 @@ def version_info_text(version):
   kids=[
     StringFileInfo([StringTable('040904B0', [
       StringStruct('CompanyName', 'Usef Farahmand'),
-      StringStruct('FileDescription', 'Image Format Converter'),
+      StringStruct('FileDescription', 'PixNexa Desktop'),
       StringStruct('FileVersion', '{version}'),
-      StringStruct('InternalName', 'ImageFormatConverter'),
+      StringStruct('InternalName', 'PixNexa'),
       StringStruct('LegalCopyright', 'Copyright (c) 2026 Usef Farahmand'),
-      StringStruct('OriginalFilename', 'ImageFormatConverter.exe'),
-      StringStruct('ProductName', 'Image Format Converter'),
+      StringStruct('OriginalFilename', 'PixNexa.exe'),
+      StringStruct('ProductName', 'PixNexa Desktop'),
       StringStruct('ProductVersion', '{version}')])]),
     VarFileInfo([VarStruct('Translation', [1033, 1200])])
   ]

@@ -16,7 +16,7 @@ This does not mean the file is infected — it means Windows has never seen this
 1. Download the file only from the [official Releases page](https://github.com/Usef-Farahmand/image-format-converter/releases).
 2. Every release includes `SHA256SUMS.txt`. Compare it with your file in PowerShell:
    ```powershell
-   Get-FileHash .\ImageFormatConverter_Setup.exe -Algorithm SHA256
+   Get-FileHash .\PixNexa_Setup.exe -Algorithm SHA256
    ```
 3. Optional: right-click the downloaded file → **Properties** → tick **Unblock** → OK.
 
@@ -62,8 +62,8 @@ SignPath signs an artifact that was uploaded to GitHub first. Sketch (verify nam
         id: upload-unsigned
         uses: actions/upload-artifact@v4
         with:
-          name: ImageFormatConverter_Setup_unsigned
-          path: Output/ImageFormatConverter_Setup.exe
+          name: PixNexa_Setup_unsigned
+          path: Output/PixNexa_Setup.exe
 
       - name: Sign with SignPath
         uses: signpath/github-action-submit-signing-request@v1
@@ -93,7 +93,7 @@ Once signing works, replace the *Current status* section above. If you use SignP
 
 ## Privacy
 
-Image Format Converter never connects to the internet and does not send any data about you or your images anywhere. See [PRIVACY.md](PRIVACY.md).
+PixNexa Desktop never connects to the internet and does not send any data about you or your images anywhere. See [PRIVACY.md](PRIVACY.md).
 
 ## Reducing antivirus false positives
 

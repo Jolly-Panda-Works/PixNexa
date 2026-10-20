@@ -22,7 +22,7 @@ def test_write_files(tmp_path):
     sv.write_files("2.0.5", root=tmp_path)
     assert (tmp_path / "_build_version.py").read_text() == 'APP_VERSION = "2.0.5"\n'
     info = (tmp_path / "version_info.txt").read_text()
-    assert "filevers=(2, 0, 5, 0)" in info and "ImageFormatConverter.exe" in info
+    assert "filevers=(2, 0, 5, 0)" in info and "PixNexa.exe" in info
     compile(info.replace("VSVersionInfo", "dict") .replace("FixedFileInfo", "dict").replace("StringFileInfo", "list")
             .replace("StringTable", "tuple").replace("StringStruct", "tuple").replace("VarFileInfo", "list")
             .replace("VarStruct", "tuple"), "version_info", "eval")

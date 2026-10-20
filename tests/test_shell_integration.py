@@ -60,7 +60,7 @@ def test_register_creates_entries_for_every_image_type(reg):
     assert si.register() is True
     for ext in core.INPUT_EXTENSIONS:
         verb = reg.keys[rf"Software\Classes\SystemFileAssociations\{ext}\shell\{si.VERB}"]
-        assert verb[""] == "Convert with Image Format Converter" and "Icon" in verb
+        assert verb[""] == "Convert with PixNexa" and "Icon" in verb
         command = reg.keys[rf"Software\Classes\SystemFileAssociations\{ext}\shell\{si.VERB}\command"][""]
         assert command.endswith('"%1"') and "image_converter_gui.py" in command
     assert si.is_registered()
@@ -68,9 +68,9 @@ def test_register_creates_entries_for_every_image_type(reg):
 
 def test_frozen_exe_command(reg, monkeypatch):
     monkeypatch.setattr(sys, "frozen", True, raising=False)
-    monkeypatch.setattr(sys, "executable", r"C:\Apps\ImageFormatConverter\ImageFormatConverter.exe")
+    monkeypatch.setattr(sys, "executable", r"C:\Apps\PixNexa\PixNexa.exe")
     command, icon = si.launch_command()
-    assert command == r'"C:\Apps\ImageFormatConverter\ImageFormatConverter.exe" "%1"'
+    assert command == r'"C:\Apps\PixNexa\PixNexa.exe" "%1"'
     assert icon.endswith(".exe\",0")
 
 
@@ -98,3 +98,13 @@ def test_unsupported_system(monkeypatch):
     monkeypatch.setattr(sys, "platform", "linux")
     assert si.is_supported() is False
     assert si.register() is False and si.unregister() is False and si.is_registered() is False
+
+
+def test_menu_item_from_before_the_rebrand_is_replaced(reg):
+    for ext in core.INPUT_EXTENSIONS:
+        reg.CreateKey(reg.HKEY_CURRENT_USER, rf"{si.BASE}\{ext}\shell\{si.LEGACY_VERB}")
+        reg.CreateKey(reg.HKEY_CURRENT_USER, rf"{si.BASE}\{ext}\shell\{si.LEGACY_VERB}\command")
+        reg.keys[rf"{si.BASE}\{ext}\shell\{si.LEGACY_VERB}\command"][""] = '"C:\\old\\ImageFormatConverter.exe" "%1"'
+    si.refresh_if_stale()
+    assert not any(si.LEGACY_VERB in k for k in reg.keys)
+    assert si.is_registered()
