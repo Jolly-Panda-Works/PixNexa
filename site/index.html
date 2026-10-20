@@ -24,12 +24,13 @@
         <span>PixNexa</span>
       </a>
       <nav class="nav" aria-label="بخش‌ها">
+        <a href="#convert">تبدیل آنلاین</a>
         <a href="#features">ویژگی‌ها</a>
         <a href="#download">دانلود</a>
         <a href="#install">راهنمای نصب</a>
         <a href="#faq">پرسش‌ها</a>
       </nav>
-      <a class="btn btn-small" href="#download">دانلود</a>
+      <a class="btn btn-small" href="#convert">تبدیل آنلاین</a>
     </div>
   </header>
 
@@ -49,6 +50,7 @@
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5l7.5-1v7H3zm0 13l7.5 1v-7H3zm8.5 1.1L21 21v-8.5h-9.5zm0-15.2v7.1H21V3z"/></svg>
               دانلود برای ویندوز
             </a>
+            <a class="btn btn-ghost" href="#convert">تبدیل آنلاین، بدون نصب</a>
           </div>
           <p class="meta" data-version="android">اندروید ۷ و جدیدتر · فایل APK</p>
         </div>
@@ -69,6 +71,47 @@
               <div class="ph-btns"><span class="b2">اشتراک‌گذاری</span><span class="b1">تبدیل ۴ تصویر</span></div>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="convert" class="section convert">
+      <div class="wrap">
+        <span class="tag">PixNexa Web</span>
+        <h2>همین‌جا در مرورگر تبدیل کنید</h2>
+        <p class="sub">بدون نصب و بدون آپلود: تصاویر داخل مرورگر خودتان تبدیل می‌شوند و هیچ فایلی به سرور فرستاده نمی‌شود.</p>
+
+        <div class="tool">
+          <label class="drop" id="drop" tabindex="0">
+            <input type="file" id="picker" accept="image/*" multiple hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13v6H5v-6H3v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6zm-6 .17V3h-2v10.17l-3.59-3.58L6 11l6 6 6-6-1.41-1.41z" transform="rotate(180 12 12)"/></svg>
+            <b>تصاویر را اینجا رها کنید یا برای انتخاب کلیک کنید</b>
+            <small>چند تصویر با هم؛ PNG، JPEG، WebP، GIF، BMP و دیگر فرمت‌هایی که مرورگر بشناسد. چسباندن با Ctrl+V هم کار می‌کند.</small>
+          </label>
+
+          <div class="controls">
+            <div class="field">
+              <span class="label">فرمت خروجی</span>
+              <div class="choice" role="radiogroup" id="formats">
+                <button type="button" role="radio" data-format="image/jpeg">JPEG</button>
+                <button type="button" role="radio" data-format="image/png">PNG</button>
+                <button type="button" role="radio" data-format="image/webp">WebP</button>
+              </div>
+            </div>
+            <div class="field" id="qualityField">
+              <span class="label">کیفیت <b id="qualityValue">٪۸۵</b></span>
+              <input type="range" id="quality" min="1" max="100" value="85" aria-label="کیفیت">
+            </div>
+            <p class="hint" id="hint"></p>
+            <div class="actions">
+              <button type="button" class="btn" id="convertBtn" disabled>تبدیل</button>
+              <button type="button" class="btn btn-ghost" id="zipBtn" hidden>دانلود همه (ZIP)</button>
+              <button type="button" class="btn btn-ghost" id="clearBtn" hidden>پاک کردن</button>
+            </div>
+          </div>
+
+          <p class="summary" id="summary" hidden></p>
+          <ul class="files" id="files"></ul>
         </div>
       </div>
     </section>
@@ -139,10 +182,11 @@
             <p>نسخهٔ اندروید برای انتخاب، تبدیل و اشتراک‌گذاری تصاویر، مستقیم روی گوشی و بدون نیاز به اینترنت.</p>
             <a class="link" data-dl="android" href="https://github.com/Usef-Farahmand/image-format-converter/releases?q=android&amp;expanded=true">دانلود نسخهٔ اندروید ←</a>
           </article>
-          <article class="product muted">
-            <span class="tag">به‌زودی</span>
+          <article class="product">
+            <span class="tag">مرورگر · بدون نصب</span>
             <h3>PixNexa Web</h3>
-            <p>نسخهٔ تحت وب، در صورت توسعهٔ آینده. آن هم مثل بقیه، تبدیل را داخل خود مرورگر انجام خواهد داد.</p>
+            <p>همین صفحه. تبدیل گروهی PNG، JPEG و WebP داخل خود مرورگر، روی هر دستگاهی، بدون آپلود.</p>
+            <a class="link" href="#convert">شروع تبدیل ←</a>
           </article>
         </div>
       </div>
@@ -257,5 +301,6 @@
   </footer>
 
   <script src="app.js"></script>
+  <script src="converter.js"></script>
 </body>
 </html>

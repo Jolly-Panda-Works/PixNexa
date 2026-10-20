@@ -19,7 +19,7 @@
 | ------- | -------- | ------------ | -------- |
 | **PixNexa Desktop** | Windows 10/11 | Batch conversion to JPG, PNG, WEBP, BMP, GIF, TIFF and ICO, drag and drop, Explorer right-click menu | [`PixNexa_Setup.exe` / `PixNexa_Portable.zip`](https://github.com/Usef-Farahmand/image-format-converter/releases/latest) |
 | **PixNexa Mobile** | Android 7.0+ | Pick, convert (PNG, JPEG, WebP) and share images, fully offline, Persian and English | [`PixNexa.apk`](https://github.com/Usef-Farahmand/image-format-converter/releases?q=android&expanded=true) |
-| **PixNexa Web** | Browser | Planned | – |
+| **PixNexa Web** | Any modern browser | Batch PNG/JPEG/WebP conversion inside the browser (nothing is uploaded), quality slider, before/after sizes, ZIP download | [Open it](https://usef-farahmand.github.io/image-format-converter/#convert) |
 
 This README covers **PixNexa Desktop**. PixNexa Mobile lives in [`android/`](android/README.md): every push to `main` builds a new APK and publishes it as a release tagged `android-v1.0.N`. The website is in [`site/`](site/) and is deployed by [`pages.yml`](.github/workflows/pages.yml).
 

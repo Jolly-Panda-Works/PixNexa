@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **PixNexa Mobile**, the Android app (`android/`, package `com.jollypanda.pixnexa`): batch PNG/JPEG/WebP conversion, quality slider with before/after sizes, save to the gallery or a chosen folder, Android Share menu (both ways), fully offline, dark theme, Persian and English UI.
 - `android.yml`: builds the APK and AAB on every push; every push to `main` publishes a release tagged `android-v1.0.N`.
+- **PixNexa Web**: an in-browser converter on the website (`site/converter.js`): batch PNG/JPEG/WebP conversion with `<canvas>`, quality slider, before/after sizes, per-file download and a ZIP of all results. Nothing is uploaded.
 - Website (`site/`) with features, downloads and an Android install guide, deployed to GitHub Pages by `pages.yml`.
 
 ## [2.0.0] - 2026-10-14
