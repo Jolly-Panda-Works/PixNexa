@@ -17,8 +17,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Prefs.applyTheme(Prefs(this).theme)
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         // Images shared to PixNexa ("Share → PixNexa"). Skipped after a rotation or language change.
         if (savedInstanceState == null) viewModel.addImages(sharedImages(intent))
         setContent {

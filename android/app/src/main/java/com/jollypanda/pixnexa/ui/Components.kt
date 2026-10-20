@@ -72,6 +72,8 @@ fun <T> ChoiceRow(
     SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
         options.forEachIndexed { index, (value, label, icon) ->
             val isSelected = value == selected
+            val inactiveIcon: (@Composable () -> Unit)? =
+                if (icon == null) null else ({ Icon(icon, contentDescription = null, Modifier.size(18.dp)) })
             SegmentedButton(
                 selected = isSelected,
                 onClick = { onSelect(value) },
@@ -81,7 +83,7 @@ fun <T> ChoiceRow(
                 icon = {
                     SegmentedButtonDefaults.Icon(
                         active = isSelected,
-                        inactiveContent = icon?.let { { Icon(it, contentDescription = null, Modifier.size(18.dp)) } },
+                        inactiveContent = inactiveIcon,
                     )
                 },
             ) {
