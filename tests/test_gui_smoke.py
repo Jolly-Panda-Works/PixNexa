@@ -29,11 +29,11 @@ def pump(app, seconds=0.3):
 def test_add_convert_and_report(app, tmp_path):
     good = tmp_path / "a.png"
     Image.new("RGB", (20, 10), (1, 2, 3)).save(good)
-    bad = tmp_path / "b.txt"
-    bad.write_text("not an image")
+    bad = tmp_path / "b.xyz"
+    bad.write_text("not a supported file")
 
     app.add_paths([str(good), str(bad), str(good)])
-    assert len(app.items) == 1                       # text file skipped, duplicate ignored
+    assert len(app.items) == 1                       # unsupported file skipped, duplicate ignored
 
     app.open_after.set(False)
     app.select_format("webp")

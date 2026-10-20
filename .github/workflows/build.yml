@@ -79,6 +79,14 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements-dev.txt pyinstaller
 
+      # FFmpeg (a pinned BtbN GPL build, checksum-verified) is shipped next to PixNexa.exe as a separate program.
+      # It is fetched first so the tests below run the video, audio and HEIC tests with the same ffmpeg.exe.
+      - name: Download FFmpeg
+        shell: pwsh
+        run: |
+          ./tools/fetch_ffmpeg.ps1 -Dest "$env:RUNNER_TEMP\ffmpeg"
+          "PIXNEXA_FFMPEG=$env:RUNNER_TEMP\ffmpeg\ffmpeg.exe" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
       - name: Run tests
         run: python -m pytest -q
 
@@ -86,8 +94,38 @@ jobs:
       - name: Write the version
         run: python tools/set_version.py ${{ needs.version.outputs.version }}
 
+      # Engines import their libraries lazily, so every package with plug-ins, data files or DLLs is collected.
       - name: Build exe
-        run: pyinstaller --noconfirm --onedir --windowed --name PixNexa --icon assets/icon.ico --version-file version_info.txt --add-data "assets;assets" --collect-all customtkinter --collect-all tkinterdnd2 image_converter_gui.py
+        run: >-
+          pyinstaller --noconfirm --onedir --windowed --name PixNexa --icon assets/icon.ico
+          --version-file version_info.txt --add-data "assets;assets"
+          --collect-all customtkinter --collect-all tkinterdnd2
+          --collect-submodules pixnexa_engines --hidden-import self_test
+          --collect-all pi_heif --collect-all pypdfium2 --collect-all pypdfium2_raw --collect-all pikepdf
+          --collect-all py7zr --collect-submodules fontTools --collect-submodules markdown
+          --collect-submodules pysubs2 --collect-submodules openpyxl
+          --hidden-import brotli --hidden-import yaml --hidden-import tomli_w
+          image_converter_gui.py
+
+      - name: Bundle FFmpeg and the license notices
+        shell: pwsh
+        run: |
+          Copy-Item -Recurse -Force "$env:RUNNER_TEMP\ffmpeg" dist\PixNexa\ffmpeg
+          Copy-Item LICENSE, THIRD-PARTY-NOTICES.md dist\PixNexa\
+          if (-not (Test-Path dist\PixNexa\ffmpeg\ffmpeg.exe)) { throw "ffmpeg.exe is missing from dist\PixNexa\ffmpeg" }
+          Get-ChildItem dist\PixNexa\ffmpeg
+
+      # The frozen app must find every engine and the bundled FFmpeg: --self-test converts tiny samples, no window.
+      - name: Check the built app
+        shell: pwsh
+        run: |
+          $env:PIXNEXA_FFMPEG = ""          # the app must find dist\PixNexa\ffmpeg\ffmpeg.exe by itself
+          $report = Join-Path $env:TEMP "PixNexa-self-test.txt"
+          Remove-Item $report -ErrorAction SilentlyContinue
+          $p = Start-Process -FilePath dist\PixNexa\PixNexa.exe -ArgumentList "--self-test" -Wait -PassThru -NoNewWindow
+          Get-Content $report -ErrorAction SilentlyContinue
+          if ($p.ExitCode -ne 0) { throw "Self-test failed (exit code $($p.ExitCode))" }
+          if (-not (Select-String -Path $report -SimpleMatch "PixNexa\ffmpeg\ffmpeg.exe" -Quiet)) { throw "The bundled FFmpeg was not used" }
 
       # Inno Setup is preinstalled on GitHub's Windows runners; install it only if it is ever missing.
       - name: Make sure Inno Setup is available
@@ -174,9 +212,12 @@ jobs:
           path: dist
           merge-multiple: true
 
+      # upload-artifact keeps sub-folders (e.g. Output/PixNexa_Setup.exe); the release wants a flat list.
       - name: Create checksums
         working-directory: dist
         run: |
+          find . -mindepth 2 -type f -exec mv {} . \;
+          find . -mindepth 1 -type d -empty -delete
           ls -la
           sha256sum * > SHA256SUMS.txt
           cat SHA256SUMS.txt

@@ -56,9 +56,11 @@ def reg(monkeypatch):
     return fake
 
 
-def test_register_creates_entries_for_every_image_type(reg):
+def test_register_creates_entries_for_every_supported_type(reg):
     assert si.register() is True
-    for ext in core.INPUT_EXTENSIONS:
+    assert set(core.INPUT_EXTENSIONS) <= set(si.extensions())
+    assert {".pdf", ".mp4", ".mp3", ".docx", ".zip", ".gz", ".json", ".srt", ".woff2"} <= set(si.extensions())
+    for ext in si.extensions():
         verb = reg.keys[rf"Software\Classes\SystemFileAssociations\{ext}\shell\{si.VERB}"]
         assert verb[""] == "Convert with PixNexa" and "Icon" in verb
         command = reg.keys[rf"Software\Classes\SystemFileAssociations\{ext}\shell\{si.VERB}\command"][""]
@@ -89,6 +91,16 @@ def test_refresh_if_stale_updates_a_moved_app(reg, monkeypatch):
     assert reg.keys[key][""] == si.launch_command()[0]
 
 
+def test_refresh_adds_types_an_older_version_did_not_know(reg):
+    command, icon = si.launch_command()
+    for ext in core.INPUT_EXTENSIONS:                   # what an images-only version registered
+        reg.CreateKey(reg.HKEY_CURRENT_USER, rf"{si.BASE}\{ext}\shell\{si.VERB}")
+        reg.CreateKey(reg.HKEY_CURRENT_USER, rf"{si.BASE}\{ext}\shell\{si.VERB}\command")
+        reg.keys[rf"{si.BASE}\{ext}\shell\{si.VERB}\command"][""] = command
+    si.refresh_if_stale()
+    assert reg.keys[rf"{si.BASE}\.pdf\shell\{si.VERB}\command"][""] == command
+
+
 def test_refresh_does_nothing_when_not_registered(reg):
     si.refresh_if_stale()
     assert reg.keys == {}
@@ -101,7 +113,7 @@ def test_unsupported_system(monkeypatch):
 
 
 def test_menu_item_from_before_the_rebrand_is_replaced(reg):
-    for ext in core.INPUT_EXTENSIONS:
+    for ext in si.extensions():
         reg.CreateKey(reg.HKEY_CURRENT_USER, rf"{si.BASE}\{ext}\shell\{si.LEGACY_VERB}")
         reg.CreateKey(reg.HKEY_CURRENT_USER, rf"{si.BASE}\{ext}\shell\{si.LEGACY_VERB}\command")
         reg.keys[rf"{si.BASE}\{ext}\shell\{si.LEGACY_VERB}\command"][""] = '"C:\\old\\ImageFormatConverter.exe" "%1"'

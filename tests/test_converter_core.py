@@ -5,6 +5,7 @@ from PIL import Image
 
 import converter_core as core
 from converter_core import ConversionError, convert_image
+from pixnexa_engines.media import find_ffmpeg
 
 
 def make_image(path, size=(64, 48), mode="RGB", color=(200, 40, 40)):
@@ -26,10 +27,15 @@ def make_transparent_png(path, size=(40, 40)):
 
 @pytest.mark.parametrize("fmt", core.FORMAT_KEYS)
 def test_png_to_every_format(tmp_path, fmt):
+    if fmt == "heic" and find_ffmpeg() is None:
+        pytest.skip("HEIC output needs FFmpeg")
     src = make_image(tmp_path / "in.png")
     dst = convert_image(src, fmt)
     assert dst.exists() and dst.parent == tmp_path
     assert dst.suffix == f".{core.FORMATS[fmt].extension}"
+    if fmt == "pdf":                                   # Pillow writes PDFs but does not read them
+        assert dst.read_bytes().startswith(b"%PDF")
+        return
     with Image.open(dst) as out:
         out.load()
         if fmt != "ico":

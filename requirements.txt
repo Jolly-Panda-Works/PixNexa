@@ -1,3 +1,17 @@
+# PixNexa Desktop runtime dependencies (licenses in THIRD-PARTY-NOTICES.md).
+# No GPL / AGPL library is linked into the app; FFmpeg and LibreOffice run as separate programs.
 customtkinter>=5.2,<7
-pillow>=10.1
+pillow>=11.3          # 11.3+ reads and writes AVIF
 tkinterdnd2>=0.4
+pi-heif>=0.22         # HEIC / HEIF reading (decode-only build, LGPL libraries; HEIC is written with FFmpeg)
+pypdfium2>=4.30       # PDF pages -> pictures, PDF text
+pikepdf>=9.0          # PDF merge, split, page ranges, compression, pictures -> PDF
+py7zr>=0.22           # 7Z archives
+fonttools>=4.50       # TTF / OTF / WOFF / WOFF2
+brotli>=1.1           # WOFF2 compression
+pysubs2>=1.8          # subtitles
+PyYAML>=6.0
+tomli>=2.0; python_version < "3.11"
+tomli-w>=1.0
+openpyxl>=3.1         # XLSX
+markdown>=3.5         # Markdown -> HTML

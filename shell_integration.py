@@ -1,4 +1,4 @@
-"""Windows Explorer integration: "Convert with PixNexa" in the right-click menu of images.
+"""Windows Explorer integration: "Convert with PixNexa" in the right-click menu of every supported file type.
 
 Entries are written for the current user only (HKEY_CURRENT_USER), so no administrator rights are needed.
 They live under SystemFileAssociations, which adds a menu item without changing which program opens the file.
@@ -9,8 +9,8 @@ On Windows 11 the item appears under "Show more options" (the classic menu).
 import sys
 from pathlib import Path
 
-import converter_core as core
 from app_common import APP_BRAND, APP_SLUG, LEGACY_SLUG
+from pixnexa_engines.registry import shell_extensions
 
 try:
     import winreg
@@ -44,13 +44,18 @@ def _verb_key(ext, verb=VERB):
     return rf"{BASE}\{ext}\shell\{verb}"
 
 
+def extensions():
+    """Images, PDF, video, audio, documents, data, archives, fonts and subtitles (".tar.gz" counts as ".gz")."""
+    return shell_extensions()
+
+
 def register():
-    """Add the menu item for every supported image type. Returns True on success."""
+    """Add the menu item for every supported file type. Returns True on success."""
     if not is_supported():
         return False
     command, icon = launch_command()
     try:
-        for ext in core.INPUT_EXTENSIONS:
+        for ext in extensions():
             with winreg.CreateKey(winreg.HKEY_CURRENT_USER, _verb_key(ext)) as key:
                 winreg.SetValueEx(key, "", 0, winreg.REG_SZ, LABEL)
                 winreg.SetValueEx(key, "Icon", 0, winreg.REG_SZ, icon)
@@ -66,7 +71,7 @@ def unregister(verb=VERB):
     if not is_supported():
         return False
     ok = True
-    for ext in core.INPUT_EXTENSIONS:
+    for ext in extensions():
         for key in (_verb_key(ext, verb) + r"\command", _verb_key(ext, verb)):      # children first
             try:
                 winreg.DeleteKey(winreg.HKEY_CURRENT_USER, key)
@@ -77,11 +82,11 @@ def unregister(verb=VERB):
     return ok
 
 
-def _registered_command(verb=VERB):
+def _registered_command(verb=VERB, ext=_PROBE_EXT):
     if not is_supported():
         return None
     try:
-        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, _verb_key(_PROBE_EXT, verb) + r"\command") as key:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, _verb_key(ext, verb) + r"\command") as key:
             return winreg.QueryValueEx(key, "")[0]
     except OSError:
         return None
@@ -94,12 +99,16 @@ def is_registered():
 def refresh_if_stale():
     """If the menu item points to an old location of the app (it was moved or updated), fix it silently.
 
-    An item left by a version from before the PixNexa rebrand is replaced by the new one.
+    An item left by a version from before the PixNexa rebrand is replaced by the new one, and a version that
+    knew fewer file types (images only) gets the item for the new ones too.
     """
     if _registered_command(LEGACY_VERB) is not None:
         unregister(LEGACY_VERB)
         register()
         return
     current = _registered_command()
-    if current is not None and current != launch_command()[0]:
+    if current is None:
+        return
+    expected = launch_command()[0]
+    if current != expected or any(_registered_command(ext=ext) != expected for ext in extensions()):
         register()

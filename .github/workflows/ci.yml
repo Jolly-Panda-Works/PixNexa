@@ -34,5 +34,9 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - run: pip install -r requirements-dev.txt
+      # FFmpeg and LibreOffice are optional for the tests (those tests skip without them); Linux gets FFmpeg so
+      # the video, audio and HEIC engines are tested on every pull request.
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
       # The window tests skip themselves when there is no display (Linux runner).
       - run: python -m pytest -q

@@ -36,10 +36,11 @@ Type: files; Name: "{autoprograms}\Image Format Converter.lnk"
 Type: filesandordirs; Name: "{autoprograms}\Image Format Converter"
 
 [Files]
+; Includes ffmpeg\ffmpeg.exe (a separate GPL program, see ffmpeg\SOURCE.txt), LICENSE and THIRD-PARTY-NOTICES.md.
 Source: "dist\PixNexa\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs
 
 [Tasks]
-Name: "contextmenu"; Description: "Add ""Convert with PixNexa"" to the right-click menu of images"
+Name: "contextmenu"; Description: "Add ""Convert with PixNexa"" to the right-click menu of supported files"
 
 [Icons]
 Name: "{group}\PixNexa Desktop"; Filename: "{app}\PixNexa.exe"
