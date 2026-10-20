@@ -88,7 +88,7 @@ jobs:
       # latest-release link of PixNexa Desktop (Windows) keeps pointing at the Windows build.
       - name: Publish GitHub Release
         if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: android-v${{ steps.ver.outputs.version }}
           name: PixNexa Mobile v${{ steps.ver.outputs.version }}
