@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="share_target_label">تبدیل با PixNexa</string>
+    <string name="tagline">تبدیل PNG، JPEG و WebP؛ آفلاین و امن.</string>
+
+    <string name="select_images">انتخاب تصاویر</string>
+    <string name="add_more">افزودن تصویر</string>
+    <string name="clear_all">پاک کردن فهرست</string>
+    <string name="empty_title">تصاویری را برای تبدیل انتخاب کنید</string>
+    <string name="empty_body">یک یا چند تصویر را هم‌زمان انتخاب کنید. همهٔ تبدیل‌ها روی گوشی خودتان انجام می‌شود و چیزی آپلود نمی‌شود.</string>
+    <string name="offline_badge">کاملاً آفلاین</string>
+
+    <string name="format_label">فرمت خروجی</string>
+    <string name="quality_label">کیفیت</string>
+    <string name="quality_value">٪%1$d</string>
+    <string name="quality_lossless">PNG بدون افت کیفیت است و تنظیم کیفیت ندارد.</string>
+    <string name="save_to">محل ذخیره</string>
+    <string name="dest_gallery">گالری</string>
+    <string name="dest_folder">پوشه</string>
+    <string name="dest_gallery_hint">Pictures/PixNexa</string>
+    <string name="choose_folder">انتخاب پوشه</string>
+    <string name="change_folder">تغییر</string>
+
+    <string name="convert">تبدیل %1$d تصویر</string>
+    <string name="converting">در حال تبدیل %1$d از %2$d…</string>
+    <string name="cancel">توقف</string>
+    <string name="share_all">اشتراک‌گذاری همه</string>
+    <string name="share">اشتراک‌گذاری</string>
+    <string name="remove">حذف</string>
+    <string name="summary">%1$d تصویر تبدیل شد · %2$s ← %3$s</string>
+    <string name="summary_failed">%1$d ناموفق</string>
+
+    <string name="status_waiting">در انتظار</string>
+    <string name="status_converting">در حال تبدیل…</string>
+    <string name="error_decode">این فایل به‌عنوان تصویر خوانده نشد.</string>
+    <string name="error_memory">این تصویر برای حافظهٔ این دستگاه خیلی بزرگ است.</string>
+    <string name="error_save">فایل تبدیل‌شده ذخیره نشد.</string>
+    <string name="error_permission">برای ذخیره در گالری، اجازهٔ دسترسی به حافظه لازم است.</string>
+    <string name="error_folder">ابتدا یک پوشه برای ذخیره انتخاب کنید.</string>
+
+    <string name="settings">تنظیمات</string>
+    <string name="theme">پوسته</string>
+    <string name="theme_system">پیش‌فرض سیستم</string>
+    <string name="theme_light">روشن</string>
+    <string name="theme_dark">تاریک</string>
+    <string name="language">زبان</string>
+    <string name="lang_system">پیش‌فرض سیستم</string>
+    <string name="about">دربارهٔ برنامه</string>
+    <string name="version">نسخهٔ %1$s</string>
+    <string name="about_text">PixNexa Mobile نسخهٔ اندروید PixNexa است؛ رایگان و متن‌باز (مجوز MIT).</string>
+    <string name="privacy_text">PixNexa هیچ دسترسی‌ای به اینترنت ندارد. تصاویر شما هرگز از گوشی خارج نمی‌شوند و هیچ داده‌ای جمع‌آوری نمی‌شود.</string>
+    <string name="website">وب‌سایت و کد منبع</string>
+    <string name="close">بستن</string>
+</resources>

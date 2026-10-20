@@ -22,6 +22,12 @@
 
 ---
 
+## PixNexa Mobile (Android) and the website
+
+This repository also contains **PixNexa Mobile**, the Android app (`com.jollypanda.pixnexa`): batch conversion between PNG, JPEG and WebP, quality slider with before/after file sizes, saving to the gallery or any folder, the Android Share menu, dark theme and a Persian interface, fully offline. Source and build notes: [`android/`](android/README.md). Every push to `main` builds a new APK and publishes it as a release tagged `android-v1.0.N`.
+
+The website with the download and install guide is in [`site/`](site/) and is deployed to **https://usef-farahmand.github.io/image-format-converter/** by [`pages.yml`](.github/workflows/pages.yml) (one-time setup: *Settings → Pages → Source: GitHub Actions*).
+
 ## Table of contents
 
 - [Features](#features)
