@@ -20,14 +20,14 @@ cd android
 ./gradlew assembleRelease      # app/build/outputs/apk/release/
 ```
 
-Needs JDK 17+ and the Android SDK (platform 35). Version on CI: `versionCode` = workflow run number,
-`versionName` = `<android/VERSION major.minor>.<run number>`.
+Needs JDK 17+ and the Android SDK (platform 35). Version on CI: `versionName` = the shared PixNexa version (root `VERSION` file, `MAJOR.MINOR.<run number>`),
+`versionCode` = 1000 + run number.
 
 ## GitHub Actions
 
-[`.github/workflows/android.yml`](../.github/workflows/android.yml) builds the APK and the App Bundle on every push.
-On `main` it also publishes a GitHub Release tagged `android-v1.0.N` with `PixNexa.apk`.
-Android releases are never marked "latest", so the Windows download link keeps working.
+The Android job of [`.github/workflows/build.yml`](../.github/workflows/build.yml) builds the APK and the App Bundle on every push.
+On `main` they are published in the same GitHub Release as PixNexa Desktop (`vMAJOR.MINOR.N`), so the newest APK is always at
+`https://github.com/Usef-Farahmand/image-format-converter/releases/latest/download/PixNexa.apk`.
 
 ## Release signing (do this once)
 

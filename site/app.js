@@ -20,14 +20,14 @@
     .then(function (releases) {
       releases = releases.filter(function (r) { return !r.draft; });
 
-      // PixNexa Mobile: tags android-v1.0.N
+      // PixNexa Mobile: the newest release that carries PixNexa.apk (all apps share one release since v2.1).
       for (var i = 0; i < releases.length; i++) {
         var rel = releases[i];
-        if (rel.tag_name.indexOf("android-v") !== 0) continue;
+        if (rel.prerelease) continue;
         var apk = findAsset(rel, function (n) { return n === "PixNexa.apk"; }) ||
                   findAsset(rel, function (n) { return /\.apk$/i.test(n); });
         if (!apk) continue;
-        var version = rel.tag_name.replace("android-v", "");
+        var version = rel.tag_name.replace(/^(android-)?v/, "");
         setAll('[data-dl="android"]', function (a) { a.href = apk.browser_download_url; a.setAttribute("download", ""); });
         setAll('[data-release="android"]', function (a) { a.href = rel.html_url; });
         setAll('[data-version="android"]', function (el) {

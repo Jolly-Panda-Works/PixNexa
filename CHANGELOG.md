@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **One release for everything**: `build.yml` now builds PixNexa Desktop and PixNexa Mobile in one run with one version (`VERSION` = 2.1.0) and publishes a single release with the installer, the portable zip, the APK, the AAB and `SHA256SUMS.txt`. `android.yml` is gone.
 - Renamed to **PixNexa**. The Windows app is now **PixNexa Desktop**: `PixNexa.exe`, `PixNexa_Setup.exe`, `PixNexa_Portable.zip`, release name *PixNexa Desktop vX.Y.Z*. The installer upgrades an existing *Image Format Converter* in place (same AppId); saved options and the Explorer menu item are migrated automatically.
 
 ### Added

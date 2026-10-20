@@ -6,8 +6,7 @@
 
 **Fast, private image conversion. Everything runs on your own device, nothing is uploaded.**
 
-[![Build Windows](https://github.com/Usef-Farahmand/image-format-converter/actions/workflows/build.yml/badge.svg)](https://github.com/Usef-Farahmand/image-format-converter/actions/workflows/build.yml)
-[![Build Android](https://github.com/Usef-Farahmand/image-format-converter/actions/workflows/android.yml/badge.svg)](https://github.com/Usef-Farahmand/image-format-converter/actions/workflows/android.yml)
+[![Build and release](https://github.com/Usef-Farahmand/image-format-converter/actions/workflows/build.yml/badge.svg)](https://github.com/Usef-Farahmand/image-format-converter/actions/workflows/build.yml)
 [![CI](https://github.com/Usef-Farahmand/image-format-converter/actions/workflows/ci.yml/badge.svg)](https://github.com/Usef-Farahmand/image-format-converter/actions/workflows/ci.yml)
 [![Latest release](https://img.shields.io/github/v/release/Usef-Farahmand/image-format-converter?display_name=tag&color=F97316)](https://github.com/Usef-Farahmand/image-format-converter/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/Usef-Farahmand/image-format-converter/total?color=F97316)](https://github.com/Usef-Farahmand/image-format-converter/releases)
@@ -17,11 +16,11 @@
 
 | Edition | Platform | What it does | Download |
 | ------- | -------- | ------------ | -------- |
-| **PixNexa Desktop** | Windows 10/11 | Batch conversion to JPG, PNG, WEBP, BMP, GIF, TIFF and ICO, drag and drop, Explorer right-click menu | [`PixNexa_Setup.exe` / `PixNexa_Portable.zip`](https://github.com/Usef-Farahmand/image-format-converter/releases/latest) |
-| **PixNexa Mobile** | Android 7.0+ | Pick, convert (PNG, JPEG, WebP) and share images, fully offline, Persian and English | [`PixNexa.apk`](https://github.com/Usef-Farahmand/image-format-converter/releases?q=android&expanded=true) |
+| **PixNexa Desktop** | Windows 10/11 | Batch conversion to JPG, PNG, WEBP, BMP, GIF, TIFF and ICO, drag and drop, Explorer right-click menu | [`PixNexa_Setup.exe`](https://github.com/Usef-Farahmand/image-format-converter/releases/latest/download/PixNexa_Setup.exe) / [`PixNexa_Portable.zip`](https://github.com/Usef-Farahmand/image-format-converter/releases/latest/download/PixNexa_Portable.zip) |
+| **PixNexa Mobile** | Android 7.0+ | Pick, convert (PNG, JPEG, WebP) and share images, fully offline, Persian and English | [`PixNexa.apk`](https://github.com/Usef-Farahmand/image-format-converter/releases/latest/download/PixNexa.apk) |
 | **PixNexa Web** | Any modern browser | Batch PNG/JPEG/WebP conversion inside the browser (nothing is uploaded), quality slider, before/after sizes, ZIP download | [Open it](https://usef-farahmand.github.io/image-format-converter/#convert) |
 
-This README covers **PixNexa Desktop**. PixNexa Mobile lives in [`android/`](android/README.md): every push to `main` builds a new APK and publishes it as a release tagged `android-v1.0.N`. The website is in [`site/`](site/) and is deployed by [`pages.yml`](.github/workflows/pages.yml).
+This README covers **PixNexa Desktop**. PixNexa Mobile lives in [`android/`](android/README.md). One workflow builds all apps, and every push to `main` publishes **one release with every file** (Windows installer and portable zip, Android APK and AAB, SHA256SUMS.txt). The website is in [`site/`](site/) and is deployed by [`pages.yml`](.github/workflows/pages.yml).
 
 ![PixNexa Desktop](docs/screenshot-main.png)
 
@@ -143,19 +142,24 @@ python -m pytest
 
 ## How the GitHub Action builds it
 
-[`.github/workflows/build.yml`](.github/workflows/build.yml) runs on a Windows runner. It installs the dependencies, runs the tests, builds the app with PyInstaller, creates the installer with Inno Setup and zips the portable version.
+[`.github/workflows/build.yml`](.github/workflows/build.yml) builds **all PixNexa apps in one run**, with one version number:
+
+- **Windows** job: tests, PyInstaller, Inno Setup installer, portable zip
+- **Android** job: signed APK and App Bundle (Gradle), see [android/README.md](android/README.md) for the signing secrets
+- **Publish** job: collects every file, writes `SHA256SUMS.txt` and creates the release
 
 | Trigger | Result |
 | ------- | ------ |
-| Pull request | Build + tests. Files are kept as **Artifacts** of the run for 14 days (Actions → the run → Artifacts). No tag, no release. |
+| Pull request, push to any other branch | Build + tests. All files are kept as **Artifacts** of the run for 14 days (Actions → the run → Artifacts). No tag, no release. |
 | Push to `develop` | Same, plus a git tag `vMAJOR.MINOR.0-dev.<build number>`. No release. |
-| Push to `main` | Same, plus a git tag and a public **GitHub Release** `vMAJOR.MINOR.<build number>` with `PixNexa_Setup.exe`, `PixNexa_Portable.zip` and `SHA256SUMS.txt`. |
+| Push to `main` | Same, plus a git tag and **one public GitHub Release** `vMAJOR.MINOR.<build number>` containing `PixNexa_Setup.exe`, `PixNexa_Portable.zip`, `PixNexa.apk`, `PixNexa-<version>.apk`, `PixNexa-<version>.aab` and `SHA256SUMS.txt`. |
 | Push of a tag `vX.Y.Z` | A release named exactly after the tag. |
 | *Run workflow* button | Same as a push to the selected branch. |
 
-Every build of a branch therefore gets its own git tag with its version number.
+The newest files always have stable links: `https://github.com/Usef-Farahmand/image-format-converter/releases/latest/download/<file name>`.
 
-Pushes that only change docs (`*.md`, `docs/`, issue templates ...) do not start a build. To start a new release line, change the number in the [`VERSION`](VERSION) file (for example `2.1.0`). The same version string is shown in the app, in the file properties of the exe, in the installer and in the release name.
+
+Pushes that only change docs (`*.md`, `docs/`, issue templates ...) do not start a build. To start a new release line, change the number in the [`VERSION`](VERSION) file (for example `2.2.0`). The same version string is shown in the desktop app, the exe properties, the installer, the Android app (`versionName`) and the release name.
 
 [`ci.yml`](.github/workflows/ci.yml) additionally lints with Ruff and runs the tests on Windows and Linux.
 
